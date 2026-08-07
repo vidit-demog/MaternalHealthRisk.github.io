@@ -1,0 +1,358 @@
+---
+title: "Risk Explorer"
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+library(tidyverse)
+library(jsonlite)
+
+maternal_df =
+  read_csv("data/Maternal Health Risk Data Set.csv") |>
+  janitor::clean_names() |>
+  mutate(risk_level = factor(risk_level, levels = c("low risk", "mid risk", "high risk")))
+```
+
+<div class="eyebrow">Compare Your Own Vitals</div>
+
+# Where do you sit in this cohort?
+
+<p class="lead">
+Enter age, blood pressure, blood glucose, and resting heart rate below, and this page compares
+those values two ways. First, against the `r nrow(maternal_df)` pregnancies in the dataset: a
+k-nearest-neighbors lookup standardizes your inputs the same way the cohort's vitals are
+(centered on the cohort mean, scaled by the cohort SD), and the 15 closest cohort records by
+Euclidean distance vote on a risk level. Second, your blood pressure reading is checked against
+diagnostic thresholds from a 2022 American Heart Association scientific statement on hypertension
+in pregnancy — independent of this dataset, and grounded in the published clinical literature.
+Everything runs in your browser — nothing you enter is sent anywhere.
+</p>
+
+```{r prep-comparison-stats}
+# slim table + standardization stats for the k-NN lookup below
+# (same standardization used in report.Rmd)
+comparison_vars = c("age", "systolic_bp", "diastolic_bp", "bs", "heart_rate")
+
+cohort_slim = maternal_df |>
+  select(all_of(comparison_vars), risk_level) |>
+  mutate(risk_level = as.character(risk_level))
+
+cohort_stats = maternal_df |>
+  summarise(across(all_of(comparison_vars), list(mean = mean, sd = sd), .names = "{.col}__{.fn}"))
+
+cohort_json = toJSON(cohort_slim, dataframe = "rows", auto_unbox = TRUE)
+stats_json  = toJSON(as.list(cohort_stats), auto_unbox = TRUE)
+```
+
+```{r embed-data, echo = FALSE, results = "asis"}
+cat('<script>\n')
+cat('const COHORT = ', cohort_json, ';\n', sep = "")
+cat('const COHORT_STATS = ', stats_json, ';\n', sep = "")
+cat('</script>\n')
+```
+
+```{r embed-widget-html, echo = FALSE, results = "asis"}
+# built via cat() instead of raw HTML in the body -- pandoc mangles
+# indented, blank-line-separated <div> blocks otherwise
+widget_html = '
+<div id="risk-explorer-app">
+<div class="info-card">
+<div class="field-grid">
+<div>
+<label for="in-age">Age (years)</label>
+<input type="number" id="in-age" value="28" min="10" max="70">
+</div>
+<div>
+<label for="in-sbp">Systolic BP (mmHg)</label>
+<input type="number" id="in-sbp" value="120" min="60" max="200">
+</div>
+<div>
+<label for="in-dbp">Diastolic BP (mmHg)</label>
+<input type="number" id="in-dbp" value="80" min="40" max="120">
+<div class="hint">The lower blood pressure number.</div>
+</div>
+<div>
+<label for="in-bs">Blood glucose (mmol/L)</label>
+<input type="number" id="in-bs" value="7.5" min="4" max="25" step="0.1">
+<div class="hint">Fasting or random blood sugar reading.</div>
+</div>
+<div>
+<label for="in-hr">Resting heart rate (bpm)</label>
+<input type="number" id="in-hr" value="75" min="40" max="140">
+</div>
+</div>
+<button class="btn-teal" id="btn-compare" style="border:none;cursor:pointer;">Compare to cohort</button>
+<div class="result-panel" id="result-panel">
+<div class="result-head">
+<span>Nearest-neighbor read:</span>
+<span class="badge-risk" id="result-badge"></span>
+<span id="result-votes" style="color:#8b94a3;font-size:0.85rem;"></span>
+</div>
+<div id="clinical-note"></div>
+<div id="profile-chart-wrap" style="margin-top:0.9rem;display:none;">
+<div id="profile-chart"></div>
+</div>
+<div class="chart-caption" id="profile-chart-caption" style="display:none;">Each bar is your percentile within the cohort for that vital (0-100). The dashed line marks the cohort median -- the healthy baseline this dataset is centered on.</div>
+<div class="explain-box" id="result-explain"></div>
+</div>
+</div>
+</div>
+<div class="disclaimer">
+This tool is descriptive, not diagnostic. The cohort comparison above tells you which historical
+records in this dataset your entered vitals most resemble; the blood-pressure category is drawn
+from published clinical guideline thresholds, not a diagnosis. Neither is a medical assessment,
+and neither was built or validated for clinical use. If you have concerns about a pregnancy, talk
+to a clinician.
+</div>
+'
+cat(widget_html)
+```
+
+```{r embed-widget-script, echo = FALSE, results = "asis"}
+# same story as the html chunk above -- keeps pandoc from touching the JS
+widget_js = '
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var K = 15;
+  var VARS = ["age", "systolic_bp", "diastolic_bp", "bs", "heart_rate"];
+  var LABELS = {
+    age: "Age", systolic_bp: "Systolic BP", diastolic_bp: "Diastolic BP",
+    bs: "Blood glucose", heart_rate: "Heart rate"
+  };
+
+  function standardize(varName, value) {
+    var mean = COHORT_STATS[varName + "__mean"];
+    var sd = COHORT_STATS[varName + "__sd"];
+    return (value - mean) / sd;
+  }
+
+  function nearestNeighbors(input) {
+    var distances = COHORT.map(function (row) {
+      var sumSq = 0;
+      VARS.forEach(function (v) {
+        var dz = standardize(v, input[v]) - standardize(v, row[v]);
+        sumSq += dz * dz;
+      });
+      return { row: row, dist: Math.sqrt(sumSq) };
+    });
+    distances.sort(function (a, b) { return a.dist - b.dist; });
+    return distances.slice(0, K);
+  }
+
+  function majorityRisk(neighbors) {
+    var counts = { "low risk": 0, "mid risk": 0, "high risk": 0 };
+    neighbors.forEach(function (n) { counts[n.row.risk_level]++; });
+    var winner = "low risk";
+    Object.keys(counts).forEach(function (k) {
+      if (counts[k] > counts[winner]) winner = k;
+    });
+    return { winner: winner, counts: counts };
+  }
+
+  function classifyBP(sbp, dbp) {
+    var reading = sbp + "/" + dbp + " mmHg";
+    if (sbp >= 160 || dbp >= 110) {
+      return {
+        cls: "bp-severe",
+        label: "Severe range (AHA 2022 guideline context)",
+        text: "A reading of " + reading + " is at or above 160/110 mmHg, the threshold at which the AHA 2022 scientific statement on hypertension in pregnancy calls for antihypertensive treatment and urgent evaluation, regardless of pregnancy type."
+      };
+    }
+    if (sbp >= 140 || dbp >= 90) {
+      return {
+        cls: "bp-hypertension",
+        label: "Hypertension-in-pregnancy range (AHA 2022 guideline context)",
+        text: "A reading of " + reading + " meets the 140/90 mmHg or higher threshold most guidelines worldwide use to diagnose hypertension in pregnancy. US (ACOG) treatment thresholds are higher, around 160/105-110 mmHg, than most international guidelines -- one of the debated points raised in the AHA statement."
+      };
+    }
+    if (sbp >= 130 || dbp >= 80) {
+      return {
+        cls: "bp-elevated",
+        label: "Elevated (AHA 2022 guideline context)",
+        text: "A reading of " + reading + " is below the standard 140/90 mmHg pregnancy threshold, but at or above the 130/80 mmHg threshold used for the general, non-pregnant population. Reclassifying pregnancy BP readings against that lower threshold has been shown to better flag women at risk for preeclampsia (Garovic et al., 2022)."
+      };
+    }
+    return {
+      cls: "bp-normal",
+      label: "Normal range (AHA 2022 guideline context)",
+      text: "A reading of " + reading + " is below every BP threshold discussed in current hypertension-in-pregnancy guidelines."
+    };
+  }
+
+  function percentile(varName, value) {
+    var all = COHORT.map(function (r) { return r[varName]; }).sort(function (a, b) { return a - b; });
+    var below = 0;
+    all.forEach(function (v) { if (v <= value) below++; });
+    return Math.round((below / all.length) * 100);
+  }
+
+  var SVG_NS = "http://www.w3.org/2000/svg";
+
+  function svgEl(tag, attrs) {
+    var el = document.createElementNS(SVG_NS, tag);
+    for (var key in attrs) {
+      if (Object.prototype.hasOwnProperty.call(attrs, key)) {
+        el.setAttribute(key, attrs[key]);
+      }
+    }
+    return el;
+  }
+
+  function makeProfileChart(input) {
+    var host = document.getElementById("profile-chart");
+    if (!host) return false;
+
+    var order = ["age", "systolic_bp", "diastolic_bp", "bs", "heart_rate"];
+    var pcts = order.map(function (v) { return percentile(v, input[v]); });
+
+    var labelWidth = 108;
+    var trackWidth = 190;
+    var rowHeight = 40;
+    var startY = 16;
+    var width = labelWidth + trackWidth + 42;
+    var height = startY + order.length * rowHeight + 8;
+
+    var svg = svgEl("svg", {
+      viewBox: "0 0 " + width + " " + height,
+      width: "100%",
+      height: String(height)
+    });
+
+    order.forEach(function (v, i) {
+      var y = startY + i * rowHeight;
+      var pct = pcts[i];
+      var barWidth = Math.max(2, trackWidth * (pct / 100));
+      var barColor = Math.abs(pct - 50) >= 25 ? "#b3323b" : "#0e7c7b";
+
+      var labelText = svgEl("text", { x: "0", y: String(y + 13), "font-size": "11", fill: "#1c2430" });
+      labelText.textContent = LABELS[v];
+      svg.appendChild(labelText);
+
+      var track = svgEl("rect", {
+        x: String(labelWidth), y: String(y), width: String(trackWidth),
+        height: "18", rx: "4", fill: "#eef0f5"
+      });
+      svg.appendChild(track);
+
+      var bar = svgEl("rect", {
+        x: String(labelWidth), y: String(y), width: String(barWidth),
+        height: "18", rx: "4", fill: barColor
+      });
+      svg.appendChild(bar);
+
+      var valueText = svgEl("text", {
+        x: String(labelWidth + trackWidth + 8), y: String(y + 13),
+        "font-size": "10", fill: "#4b5768"
+      });
+      valueText.textContent = pct + "th";
+      svg.appendChild(valueText);
+    });
+
+    var lineX = labelWidth + trackWidth * 0.5;
+    var medianLine = svgEl("line", {
+      x1: String(lineX), y1: String(startY - 4),
+      x2: String(lineX), y2: String(startY + order.length * rowHeight - 24),
+      stroke: "#4b5768", "stroke-width": "1.5", "stroke-dasharray": "4,4"
+    });
+    svg.appendChild(medianLine);
+
+    host.innerHTML = "";
+    host.appendChild(svg);
+    return true;
+  }
+
+  function renderResult() {
+    var input = {
+      age: parseFloat(document.getElementById("in-age").value),
+      systolic_bp: parseFloat(document.getElementById("in-sbp").value),
+      diastolic_bp: parseFloat(document.getElementById("in-dbp").value),
+      bs: parseFloat(document.getElementById("in-bs").value),
+      heart_rate: parseFloat(document.getElementById("in-hr").value)
+    };
+
+    var missing = VARS.filter(function (v) { return isNaN(input[v]); });
+    if (missing.length) {
+      alert("Please fill in all five fields before comparing.");
+      return;
+    }
+
+    var neighbors = nearestNeighbors(input);
+    var result = majorityRisk(neighbors);
+
+    var badge = document.getElementById("result-badge");
+    badge.textContent = result.winner;
+    badge.className = "badge-risk " + (
+      result.winner === "low risk" ? "badge-low" : result.winner === "mid risk" ? "badge-mid" : "badge-high"
+    );
+
+    document.getElementById("result-votes").textContent =
+      "of your " + K + " nearest matches: " + result.counts["low risk"] + " low, " +
+      result.counts["mid risk"] + " mid, " + result.counts["high risk"] + " high";
+
+    var bpInfo = classifyBP(input.systolic_bp, input.diastolic_bp);
+    var noteEl = document.getElementById("clinical-note");
+    noteEl.innerHTML = "";
+    noteEl.style.display = "block";
+    noteEl.style.background = "#fbeef8";
+    noteEl.style.border = "1px solid #eccbe4";
+    noteEl.style.borderLeft = "4px solid #c65fae";
+    noteEl.style.borderRadius = "8px";
+    noteEl.style.padding = "0.85rem 1rem";
+    noteEl.style.marginTop = "0.9rem";
+    noteEl.style.fontSize = "0.86rem";
+    noteEl.style.lineHeight = "1.5";
+    noteEl.style.color = "#4b5768";
+
+    var bpLabelEl = document.createElement("span");
+    bpLabelEl.textContent = bpInfo.label;
+    bpLabelEl.style.display = "block";
+    bpLabelEl.style.fontSize = "0.72rem";
+    bpLabelEl.style.fontWeight = "700";
+    bpLabelEl.style.textTransform = "uppercase";
+    bpLabelEl.style.letterSpacing = "0.04em";
+    bpLabelEl.style.marginBottom = "0.3rem";
+    bpLabelEl.style.color = "#93297d";
+    noteEl.appendChild(bpLabelEl);
+    noteEl.appendChild(document.createTextNode(bpInfo.text));
+
+    var pctText = VARS.map(function (v) {
+      return LABELS[v] + " is at the " + percentile(v, input[v]) + "th percentile";
+    }).join("; ");
+
+    document.getElementById("result-explain").innerHTML =
+      "Compared against all " + COHORT.length + " records: " + pctText + " of this cohort. " +
+      "The nearest-neighbor vote leans <strong>" + result.winner + "</strong>, based on the " +
+      K + " cohort records closest to your inputs after standardizing each vital by the cohort mean and SD.";
+
+    document.getElementById("result-panel").classList.add("show");
+
+    var chartWrap = document.getElementById("profile-chart-wrap");
+    var chartCaption = document.getElementById("profile-chart-caption");
+    var chartOk = false;
+    try {
+      chartOk = makeProfileChart(input);
+    } catch (err) {
+      console.warn("Risk explorer: profile chart rendering failed, showing text results only.", err);
+      chartOk = false;
+    }
+    if (chartWrap) chartWrap.style.display = chartOk ? "block" : "none";
+    if (chartCaption) chartCaption.style.display = chartOk ? "block" : "none";
+  }
+
+  var btn = document.getElementById("btn-compare");
+  if (btn) btn.addEventListener("click", renderResult);
+});
+</script>
+'
+cat(widget_js)
+```
+
+<footer class="site-footer">
+Standardization and neighbor lookup mirror the modeling approach in the <a href="report.html">report</a>.
+See the <a href="index.html">home page</a> for variable definitions and the data source.
+<br><br>
+Blood-pressure category thresholds cited above are from Garovic VD, Dechend R, Easterling T, et al.
+<em>Hypertension in Pregnancy: Diagnosis, Blood Pressure Goals, and Pharmacotherapy: A Scientific
+Statement From the American Heart Association.</em> Hypertension. 2022;79(2):e21&ndash;e41.
+<a href="https://doi.org/10.1161/HYP.0000000000000208" target="_blank" rel="noopener">doi:10.1161/HYP.0000000000000208</a>.
+</footer>

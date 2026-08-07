@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Risk Explorer</title>
+
+<script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #204a87; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #204a87; font-weight: bold; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #ce5c00; font-weight: bold; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<link rel="stylesheet" href="assets/custom.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Maternal Health Risk</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="report.html">Report</a>
+</li>
+<li>
+  <a href="explore.html">Risk Explorer</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/vidit-demog/MaternalHealth.github.io">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Risk Explorer</h1>
+
+</div>
+
+
+<div class="eyebrow">
+Compare Your Own Vitals
+</div>
+<div id="where-do-you-sit-in-this-cohort" class="section level1">
+<h1>Where do you sit in this cohort?</h1>
+<p class="lead">
+Enter age, blood pressure, blood glucose, and resting heart rate below,
+and this page compares those values two ways. First, against the 1014
+pregnancies in the dataset: a k-nearest-neighbors lookup standardizes
+your inputs the same way the cohort’s vitals are (centered on the cohort
+mean, scaled by the cohort SD), and the 15 closest cohort records by
+Euclidean distance vote on a risk level. Second, your blood pressure
+reading is checked against diagnostic thresholds from a 2022 American
+Heart Association scientific statement on hypertension in pregnancy —
+independent of this dataset, and grounded in the published clinical
+literature. Everything runs in your browser — nothing you enter is sent
+anywhere.
+</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># slim table + standardization stats for the k-NN lookup below</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="co"># (same standardization used in report.Rmd)</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>comparison_vars <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;systolic_bp&quot;</span>, <span class="st">&quot;diastolic_bp&quot;</span>, <span class="st">&quot;bs&quot;</span>, <span class="st">&quot;heart_rate&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>cohort_slim <span class="ot">=</span> maternal_df <span class="sc">|&gt;</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">all_of</span>(comparison_vars), risk_level) <span class="sc">|&gt;</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">risk_level =</span> <span class="fu">as.character</span>(risk_level))</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>cohort_stats <span class="ot">=</span> maternal_df <span class="sc">|&gt;</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(comparison_vars), <span class="fu">list</span>(<span class="at">mean =</span> mean, <span class="at">sd =</span> sd), <span class="at">.names =</span> <span class="st">&quot;{.col}__{.fn}&quot;</span>))</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>cohort_json <span class="ot">=</span> <span class="fu">toJSON</span>(cohort_slim, <span class="at">dataframe =</span> <span class="st">&quot;rows&quot;</span>, <span class="at">auto_unbox =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>stats_json  <span class="ot">=</span> <span class="fu">toJSON</span>(<span class="fu">as.list</span>(cohort_stats), <span class="at">auto_unbox =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<script>
+const COHORT = [{"age":25,"systolic_bp":130,"diastolic_bp":80,"bs":15,"heart_rate":86,"risk_level":"high risk"},{"age":35,"systolic_bp":140,"diastolic_bp":90,"bs":13,"heart_rate":70,"risk_level":"high risk"},{"age":29,"systolic_bp":90,"diastolic_bp":70,"bs":8,"heart_rate":80,"risk_level":"high risk"},{"age":30,"systolic_bp":140,"diastolic_bp":85,"bs":7,"heart_rate":70,"risk_level":"high risk"},{"age":35,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"low risk"},{"age":23,"systolic_bp":140,"diastolic_bp":80,"bs":7.01,"heart_rate":70,"risk_level":"high risk"},{"age":23,"systolic_bp":130,"diastolic_bp":70,"bs":7.01,"heart_rate":78,"risk_level":"mid risk"},{"age":35,"systolic_bp":85,"diastolic_bp":60,"bs":11,"heart_rate":86,"risk_level":"high risk"},{"age":32,"systolic_bp":120,"diastolic_bp":90,"bs":6.9,"heart_rate":70,"risk_level":"mid risk"},{"age":42,"systolic_bp":130,"diastolic_bp":80,"bs":18,"heart_rate":70,"risk_level":"high risk"},{"age":23,"systolic_bp":90,"diastolic_bp":60,"bs":7.01,"heart_rate":76,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":25,"systolic_bp":110,"diastolic_bp":89,"bs":7.01,"heart_rate":77,"risk_level":"low risk"},{"age":20,"systolic_bp":120,"diastolic_bp":75,"bs":7.01,"heart_rate":70,"risk_level":"mid risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"mid risk"},{"age":15,"systolic_bp":120,"diastolic_bp":80,"bs":7.01,"heart_rate":70,"risk_level":"low risk"},{"age":50,"systolic_bp":140,"diastolic_bp":90,"bs":15,"heart_rate":90,"risk_level":"high risk"},{"age":25,"systolic_bp":140,"diastolic_bp":100,"bs":7.01,"heart_rate":80,"risk_level":"high risk"},{"age":30,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":10,"systolic_bp":70,"diastolic_bp":50,"bs":6.9,"heart_rate":70,"risk_level":"low risk"},{"age":40,"systolic_bp":140,"diastolic_bp":100,"bs":18,"heart_rate":90,"risk_level":"high risk"},{"age":50,"systolic_bp":140,"diastolic_bp":80,"bs":6.7,"heart_rate":70,"risk_level":"mid risk"},{"age":21,"systolic_bp":90,"diastolic_bp":65,"bs":7.5,"heart_rate":76,"risk_level":"low risk"},{"age":18,"systolic_bp":90,"diastolic_bp":60,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":21,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":76,"risk_level":"low risk"},{"age":16,"systolic_bp":100,"diastolic_bp":70,"bs":7.2,"heart_rate":80,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":75,"bs":7.2,"heart_rate":66,"risk_level":"low risk"},{"age":22,"systolic_bp":100,"diastolic_bp":65,"bs":7.2,"heart_rate":70,"risk_level":"low risk"},{"age":49,"systolic_bp":120,"diastolic_bp":90,"bs":7.2,"heart_rate":77,"risk_level":"low risk"},{"age":28,"systolic_bp":90,"diastolic_bp":60,"bs":7.2,"heart_rate":82,"risk_level":"low risk"},{"age":20,"systolic_bp":100,"diastolic_bp":90,"bs":7.1,"heart_rate":88,"risk_level":"low risk"},{"age":23,"systolic_bp":100,"diastolic_bp":85,"bs":7.1,"heart_rate":66,"risk_level":"low risk"},{"age":22,"systolic_bp":120,"diastolic_bp":90,"bs":7.1,"heart_rate":82,"risk_level":"low risk"},{"age":21,"systolic_bp":120,"diastolic_bp":80,"bs":7.1,"heart_rate":77,"risk_level":"low risk"},{"age":21,"systolic_bp":75,"diastolic_bp":50,"bs":6.1,"heart_rate":70,"risk_level":"low risk"},{"age":12,"systolic_bp":95,"diastolic_bp":60,"bs":6.1,"heart_rate":60,"risk_level":"low risk"},{"age":60,"systolic_bp":120,"diastolic_bp":80,"bs":6.1,"heart_rate":75,"risk_level":"low risk"},{"age":55,"systolic_bp":100,"diastolic_bp":65,"bs":6.1,"heart_rate":66,"risk_level":"low risk"},{"age":45,"systolic_bp":120,"diastolic_bp":95,"bs":6.1,"heart_rate":66,"risk_level":"low risk"},{"age":35,"systolic_bp":100,"diastolic_bp":70,"bs":6.1,"heart_rate":66,"risk_level":"low risk"},{"age":22,"systolic_bp":120,"diastolic_bp":85,"bs":6.1,"heart_rate":88,"risk_level":"low risk"},{"age":23,"systolic_bp":120,"diastolic_bp":90,"bs":6.1,"heart_rate":60,"risk_level":"low risk"},{"age":25,"systolic_bp":90,"diastolic_bp":70,"bs":6.1,"heart_rate":80,"risk_level":"low risk"},{"age":30,"systolic_bp":120,"diastolic_bp":80,"bs":6.1,"heart_rate":70,"risk_level":"low risk"},{"age":23,"systolic_bp":120,"diastolic_bp":90,"bs":6.1,"heart_rate":70,"risk_level":"low risk"},{"age":32,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":42,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":23,"systolic_bp":90,"diastolic_bp":60,"bs":7.5,"heart_rate":76,"risk_level":"low risk"},{"age":15,"systolic_bp":76,"diastolic_bp":49,"bs":7.5,"heart_rate":77,"risk_level":"low risk"},{"age":15,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"low risk"},{"age":25,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":66,"risk_level":"low risk"},{"age":22,"systolic_bp":100,"diastolic_bp":65,"bs":7,"heart_rate":80,"risk_level":"low risk"},{"age":35,"systolic_bp":100,"diastolic_bp":70,"bs":7,"heart_rate":60,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":85,"bs":7,"heart_rate":60,"risk_level":"low risk"},{"age":60,"systolic_bp":90,"diastolic_bp":65,"bs":7,"heart_rate":77,"risk_level":"low risk"},{"age":23,"systolic_bp":120,"diastolic_bp":90,"bs":6.7,"heart_rate":70,"risk_level":"low risk"},{"age":32,"systolic_bp":120,"diastolic_bp":90,"bs":6.4,"heart_rate":70,"risk_level":"low risk"},{"age":42,"systolic_bp":120,"diastolic_bp":80,"bs":6.4,"heart_rate":70,"risk_level":"low risk"},{"age":23,"systolic_bp":90,"diastolic_bp":60,"bs":6.4,"heart_rate":76,"risk_level":"low risk"},{"age":15,"systolic_bp":76,"diastolic_bp":49,"bs":6.4,"heart_rate":77,"risk_level":"low risk"},{"age":15,"systolic_bp":120,"diastolic_bp":80,"bs":7.2,"heart_rate":70,"risk_level":"low risk"},{"age":15,"systolic_bp":80,"diastolic_bp":60,"bs":7,"heart_rate":80,"risk_level":"low risk"},{"age":12,"systolic_bp":95,"diastolic_bp":60,"bs":7.2,"heart_rate":77,"risk_level":"low risk"},{"age":29,"systolic_bp":90,"diastolic_bp":70,"bs":6.7,"heart_rate":80,"risk_level":"mid risk"},{"age":31,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"mid risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":6.7,"heart_rate":78,"risk_level":"mid risk"},{"age":17,"systolic_bp":85,"diastolic_bp":60,"bs":9,"heart_rate":86,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":20,"systolic_bp":110,"diastolic_bp":60,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":32,"systolic_bp":120,"diastolic_bp":65,"bs":6,"heart_rate":76,"risk_level":"mid risk"},{"age":26,"systolic_bp":85,"diastolic_bp":60,"bs":6,"heart_rate":86,"risk_level":"mid risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":7.7,"heart_rate":78,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":54,"systolic_bp":130,"diastolic_bp":70,"bs":12,"heart_rate":67,"risk_level":"mid risk"},{"age":44,"systolic_bp":120,"diastolic_bp":90,"bs":16,"heart_rate":80,"risk_level":"mid risk"},{"age":23,"systolic_bp":130,"diastolic_bp":70,"bs":6.9,"heart_rate":70,"risk_level":"mid risk"},{"age":22,"systolic_bp":85,"diastolic_bp":60,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":55,"systolic_bp":120,"diastolic_bp":90,"bs":12,"heart_rate":70,"risk_level":"mid risk"},{"age":35,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":78,"risk_level":"mid risk"},{"age":21,"systolic_bp":90,"diastolic_bp":60,"bs":6.9,"heart_rate":86,"risk_level":"mid risk"},{"age":16,"systolic_bp":90,"diastolic_bp":65,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":33,"systolic_bp":115,"diastolic_bp":65,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":12,"systolic_bp":95,"diastolic_bp":60,"bs":6.9,"heart_rate":65,"risk_level":"mid risk"},{"age":28,"systolic_bp":120,"diastolic_bp":90,"bs":6.9,"heart_rate":70,"risk_level":"mid risk"},{"age":21,"systolic_bp":90,"diastolic_bp":65,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":18,"systolic_bp":90,"diastolic_bp":60,"bs":6.9,"heart_rate":70,"risk_level":"mid risk"},{"age":21,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":16,"systolic_bp":100,"diastolic_bp":70,"bs":6.9,"heart_rate":80,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":75,"bs":6.9,"heart_rate":66,"risk_level":"mid risk"},{"age":23,"systolic_bp":100,"diastolic_bp":85,"bs":6.9,"heart_rate":66,"risk_level":"mid risk"},{"age":22,"systolic_bp":120,"diastolic_bp":90,"bs":7.8,"heart_rate":82,"risk_level":"mid risk"},{"age":60,"systolic_bp":120,"diastolic_bp":85,"bs":15,"heart_rate":60,"risk_level":"mid risk"},{"age":13,"systolic_bp":90,"diastolic_bp":65,"bs":7.8,"heart_rate":80,"risk_level":"mid risk"},{"age":23,"systolic_bp":120,"diastolic_bp":90,"bs":7.8,"heart_rate":60,"risk_level":"mid risk"},{"age":28,"systolic_bp":115,"diastolic_bp":60,"bs":7.8,"heart_rate":86,"risk_level":"mid risk"},{"age":50,"systolic_bp":120,"diastolic_bp":80,"bs":7.8,"heart_rate":70,"risk_level":"mid risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":7.8,"heart_rate":78,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":85,"bs":7.8,"heart_rate":60,"risk_level":"mid risk"},{"age":60,"systolic_bp":90,"diastolic_bp":65,"bs":6.8,"heart_rate":77,"risk_level":"mid risk"},{"age":55,"systolic_bp":120,"diastolic_bp":90,"bs":6.8,"heart_rate":66,"risk_level":"mid risk"},{"age":25,"systolic_bp":120,"diastolic_bp":80,"bs":6.8,"heart_rate":66,"risk_level":"mid risk"},{"age":48,"systolic_bp":140,"diastolic_bp":90,"bs":15,"heart_rate":90,"risk_level":"high risk"},{"age":25,"systolic_bp":140,"diastolic_bp":100,"bs":6.8,"heart_rate":80,"risk_level":"high risk"},{"age":23,"systolic_bp":140,"diastolic_bp":90,"bs":6.8,"heart_rate":70,"risk_level":"high risk"},{"age":34,"systolic_bp":85,"diastolic_bp":60,"bs":11,"heart_rate":86,"risk_level":"high risk"},{"age":50,"systolic_bp":140,"diastolic_bp":90,"bs":15,"heart_rate":90,"risk_level":"high risk"},{"age":25,"systolic_bp":140,"diastolic_bp":100,"bs":6.8,"heart_rate":80,"risk_level":"high risk"},{"age":42,"systolic_bp":140,"diastolic_bp":100,"bs":18,"heart_rate":90,"risk_level":"high risk"},{"age":32,"systolic_bp":140,"diastolic_bp":100,"bs":7.9,"heart_rate":78,"risk_level":"high risk"},{"age":50,"systolic_bp":140,"diastolic_bp":95,"bs":17,"heart_rate":60,"risk_level":"high risk"},{"age":38,"systolic_bp":135,"diastolic_bp":60,"bs":7.9,"heart_rate":86,"risk_level":"high risk"},{"age":39,"systolic_bp":90,"diastolic_bp":70,"bs":9,"heart_rate":80,"risk_level":"high risk"},{"age":30,"systolic_bp":140,"diastolic_bp":100,"bs":15,"heart_rate":70,"risk_level":"high risk"},{"age":63,"systolic_bp":140,"diastolic_bp":90,"bs":15,"heart_rate":90,"risk_level":"high risk"},{"age":25,"systolic_bp":140,"diastolic_bp":100,"bs":7.9,"heart_rate":80,"risk_level":"high risk"},{"age":30,"systolic_bp":120,"diastolic_bp":80,"bs":7.9,"heart_rate":76,"risk_level":"high risk"},{"age":55,"systolic_bp":140,"diastolic_bp":100,"bs":18,"heart_rate":90,"risk_level":"high risk"},{"age":32,"systolic_bp":140,"diastolic_bp":100,"bs":7.9,"heart_rate":78,"risk_level":"high risk"},{"age":30,"systolic_bp":140,"diastolic_bp":100,"bs":15,"heart_rate":70,"risk_level":"high risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"high risk"},{"age":49,"systolic_bp":140,"diastolic_bp":90,"bs":15,"heart_rate":90,"risk_level":"high risk"},{"age":25,"systolic_bp":140,"diastolic_bp":100,"bs":7.5,"heart_rate":80,"risk_level":"high risk"},{"age":40,"systolic_bp":160,"diastolic_bp":100,"bs":19,"heart_rate":77,"risk_level":"high risk"},{"age":32,"systolic_bp":140,"diastolic_bp":90,"bs":18,"heart_rate":88,"risk_level":"high risk"},{"age":35,"systolic_bp":140,"diastolic_bp":100,"bs":7.5,"heart_rate":66,"risk_level":"high risk"},{"age":54,"systolic_bp":140,"diastolic_bp":100,"bs":15,"heart_rate":66,"risk_level":"high risk"},{"age":55,"systolic_bp":140,"diastolic_bp":95,"bs":19,"heart_rate":77,"risk_level":"high risk"},{"age":29,"systolic_bp":120,"diastolic_bp":70,"bs":9,"heart_rate":80,"risk_level":"high risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"high risk"},{"age":40,"systolic_bp":160,"diastolic_bp":100,"bs":19,"heart_rate":77,"risk_level":"high risk"},{"age":32,"systolic_bp":140,"diastolic_bp":90,"bs":18,"heart_rate":88,"risk_level":"high risk"},{"age":35,"systolic_bp":140,"diastolic_bp":100,"bs":7.5,"heart_rate":66,"risk_level":"high risk"},{"age":54,"systolic_bp":140,"diastolic_bp":100,"bs":15,"heart_rate":66,"risk_level":"high risk"},{"age":40,"systolic_bp":120,"diastolic_bp":95,"bs":11,"heart_rate":80,"risk_level":"high risk"},{"age":22,"systolic_bp":90,"diastolic_bp":60,"bs":7.5,"heart_rate":60,"risk_level":"high risk"},{"age":40,"systolic_bp":120,"diastolic_bp":85,"bs":15,"heart_rate":60,"risk_level":"high risk"},{"age":55,"systolic_bp":140,"diastolic_bp":95,"bs":19,"heart_rate":77,"risk_level":"high risk"},{"age":50,"systolic_bp":130,"diastolic_bp":100,"bs":16,"heart_rate":75,"risk_level":"high risk"},{"age":18,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":32,"systolic_bp":140,"diastolic_bp":100,"bs":6.9,"heart_rate":78,"risk_level":"high risk"},{"age":17,"systolic_bp":90,"diastolic_bp":60,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":17,"systolic_bp":90,"diastolic_bp":63,"bs":6.9,"heart_rate":70,"risk_level":"mid risk"},{"age":25,"systolic_bp":120,"diastolic_bp":90,"bs":6.7,"heart_rate":80,"risk_level":"mid risk"},{"age":17,"systolic_bp":120,"diastolic_bp":80,"bs":6.7,"heart_rate":76,"risk_level":"mid risk"},{"age":14,"systolic_bp":90,"diastolic_bp":65,"bs":7,"heart_rate":70,"risk_level":"high risk"},{"age":15,"systolic_bp":80,"diastolic_bp":60,"bs":6.7,"heart_rate":80,"risk_level":"low risk"},{"age":15,"systolic_bp":100,"diastolic_bp":65,"bs":6.7,"heart_rate":76,"risk_level":"low risk"},{"age":12,"systolic_bp":95,"diastolic_bp":60,"bs":6.7,"heart_rate":77,"risk_level":"low risk"},{"age":37,"systolic_bp":120,"diastolic_bp":90,"bs":11,"heart_rate":88,"risk_level":"high risk"},{"age":18,"systolic_bp":100,"diastolic_bp":70,"bs":6.7,"heart_rate":76,"risk_level":"low risk"},{"age":21,"systolic_bp":100,"diastolic_bp":85,"bs":6.7,"heart_rate":70,"risk_level":"low risk"},{"age":17,"systolic_bp":110,"diastolic_bp":75,"bs":12,"heart_rate":76,"risk_level":"high risk"},{"age":25,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":80,"risk_level":"low risk"},{"age":23,"systolic_bp":85,"diastolic_bp":65,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":12,"systolic_bp":95,"diastolic_bp":60,"bs":7.5,"heart_rate":65,"risk_level":"low risk"},{"age":28,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":40,"systolic_bp":120,"diastolic_bp":90,"bs":12,"heart_rate":80,"risk_level":"high risk"},{"age":55,"systolic_bp":129,"diastolic_bp":85,"bs":7.5,"heart_rate":88,"risk_level":"low risk"},{"age":25,"systolic_bp":100,"diastolic_bp":90,"bs":7.5,"heart_rate":76,"risk_level":"low risk"},{"age":35,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":80,"risk_level":"low risk"},{"age":21,"systolic_bp":90,"diastolic_bp":65,"bs":7.5,"heart_rate":76,"risk_level":"low risk"},{"age":18,"systolic_bp":90,"diastolic_bp":60,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":21,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":76,"risk_level":"low risk"},{"age":16,"systolic_bp":100,"diastolic_bp":70,"bs":7.2,"heart_rate":80,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":75,"bs":7.2,"heart_rate":66,"risk_level":"low risk"},{"age":40,"systolic_bp":160,"diastolic_bp":100,"bs":19,"heart_rate":77,"risk_level":"high risk"},{"age":32,"systolic_bp":140,"diastolic_bp":90,"bs":18,"heart_rate":88,"risk_level":"high risk"},{"age":22,"systolic_bp":100,"diastolic_bp":65,"bs":7.2,"heart_rate":70,"risk_level":"low risk"},{"age":49,"systolic_bp":120,"diastolic_bp":90,"bs":7.2,"heart_rate":77,"risk_level":"low risk"},{"age":28,"systolic_bp":90,"diastolic_bp":60,"bs":7.2,"heart_rate":82,"risk_level":"low risk"},{"age":12,"systolic_bp":90,"diastolic_bp":60,"bs":7.9,"heart_rate":66,"risk_level":"high risk"},{"age":20,"systolic_bp":100,"diastolic_bp":90,"bs":7.1,"heart_rate":88,"risk_level":"low risk"},{"age":23,"systolic_bp":100,"diastolic_bp":85,"bs":7.1,"heart_rate":66,"risk_level":"low risk"},{"age":22,"systolic_bp":120,"diastolic_bp":90,"bs":7.1,"heart_rate":82,"risk_level":"low risk"},{"age":21,"systolic_bp":120,"diastolic_bp":80,"bs":7.1,"heart_rate":77,"risk_level":"low risk"},{"age":35,"systolic_bp":140,"diastolic_bp":100,"bs":8,"heart_rate":66,"risk_level":"high risk"},{"age":54,"systolic_bp":140,"diastolic_bp":100,"bs":15,"heart_rate":66,"risk_level":"high risk"},{"age":40,"systolic_bp":120,"diastolic_bp":95,"bs":11,"heart_rate":80,"risk_level":"high risk"},{"age":21,"systolic_bp":75,"diastolic_bp":50,"bs":6.1,"heart_rate":70,"risk_level":"low risk"},{"age":12,"systolic_bp":95,"diastolic_bp":60,"bs":6.1,"heart_rate":60,"risk_level":"low risk"},{"age":60,"systolic_bp":120,"diastolic_bp":85,"bs":15,"heart_rate":60,"risk_level":"high risk"},{"age":55,"systolic_bp":140,"diastolic_bp":95,"bs":19,"heart_rate":77,"risk_level":"high risk"},{"age":50,"systolic_bp":130,"diastolic_bp":100,"bs":16,"heart_rate":75,"risk_level":"high risk"},{"age":60,"systolic_bp":120,"diastolic_bp":80,"bs":6.1,"heart_rate":75,"risk_level":"low risk"},{"age":55,"systolic_bp":100,"diastolic_bp":65,"bs":6.1,"heart_rate":66,"risk_level":"low risk"},{"age":45,"systolic_bp":120,"diastolic_bp":95,"bs":6.1,"heart_rate":66,"risk_level":"low risk"},{"age":35,"systolic_bp":100,"diastolic_bp":70,"bs":6.1,"heart_rate":66,"risk_level":"low risk"},{"age":22,"systolic_bp":120,"diastolic_bp":85,"bs":6.1,"heart_rate":88,"risk_level":"low risk"},{"age":13,"systolic_bp":90,"diastolic_bp":65,"bs":7.9,"heart_rate":80,"risk_level":"mid risk"},{"age":23,"systolic_bp":120,"diastolic_bp":90,"bs":6.1,"heart_rate":60,"risk_level":"low risk"},{"age":17,"systolic_bp":90,"diastolic_bp":65,"bs":6.1,"heart_rate":67,"risk_level":"high risk"},{"age":28,"systolic_bp":83,"diastolic_bp":60,"bs":8,"heart_rate":86,"risk_level":"high risk"},{"age":50,"systolic_bp":120,"diastolic_bp":80,"bs":15,"heart_rate":70,"risk_level":"high risk"},{"age":25,"systolic_bp":90,"diastolic_bp":70,"bs":6.1,"heart_rate":80,"risk_level":"low risk"},{"age":30,"systolic_bp":120,"diastolic_bp":80,"bs":6.1,"heart_rate":70,"risk_level":"low risk"},{"age":31,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"mid risk"},{"age":23,"systolic_bp":120,"diastolic_bp":90,"bs":6.1,"heart_rate":70,"risk_level":"low risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":6.1,"heart_rate":78,"risk_level":"mid risk"},{"age":17,"systolic_bp":85,"diastolic_bp":60,"bs":9,"heart_rate":86,"risk_level":"high risk"},{"age":32,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":42,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":23,"systolic_bp":90,"diastolic_bp":60,"bs":7.5,"heart_rate":76,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":15,"systolic_bp":76,"diastolic_bp":49,"bs":7.5,"heart_rate":77,"risk_level":"low risk"},{"age":33,"systolic_bp":120,"diastolic_bp":75,"bs":10,"heart_rate":70,"risk_level":"high risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"high risk"},{"age":15,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"low risk"},{"age":25,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":66,"risk_level":"low risk"},{"age":22,"systolic_bp":100,"diastolic_bp":65,"bs":7,"heart_rate":80,"risk_level":"low risk"},{"age":50,"systolic_bp":140,"diastolic_bp":95,"bs":17,"heart_rate":60,"risk_level":"high risk"},{"age":35,"systolic_bp":100,"diastolic_bp":70,"bs":7,"heart_rate":60,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":85,"bs":7,"heart_rate":60,"risk_level":"low risk"},{"age":60,"systolic_bp":90,"diastolic_bp":65,"bs":7,"heart_rate":77,"risk_level":"low risk"},{"age":28,"systolic_bp":85,"diastolic_bp":60,"bs":9,"heart_rate":86,"risk_level":"mid risk"},{"age":50,"systolic_bp":140,"diastolic_bp":80,"bs":6.7,"heart_rate":70,"risk_level":"mid risk"},{"age":29,"systolic_bp":90,"diastolic_bp":70,"bs":6.7,"heart_rate":80,"risk_level":"mid risk"},{"age":30,"systolic_bp":140,"diastolic_bp":100,"bs":15,"heart_rate":70,"risk_level":"high risk"},{"age":31,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"mid risk"},{"age":23,"systolic_bp":120,"diastolic_bp":90,"bs":6.7,"heart_rate":70,"risk_level":"low risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":6.7,"heart_rate":78,"risk_level":"mid risk"},{"age":17,"systolic_bp":85,"diastolic_bp":60,"bs":9,"heart_rate":86,"risk_level":"mid risk"},{"age":32,"systolic_bp":120,"diastolic_bp":90,"bs":6.4,"heart_rate":70,"risk_level":"low risk"},{"age":42,"systolic_bp":120,"diastolic_bp":80,"bs":6.4,"heart_rate":70,"risk_level":"low risk"},{"age":23,"systolic_bp":90,"diastolic_bp":60,"bs":6.4,"heart_rate":76,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":15,"systolic_bp":76,"diastolic_bp":49,"bs":6.4,"heart_rate":77,"risk_level":"low risk"},{"age":29,"systolic_bp":120,"diastolic_bp":75,"bs":7.2,"heart_rate":70,"risk_level":"high risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"high risk"},{"age":15,"systolic_bp":120,"diastolic_bp":80,"bs":7.2,"heart_rate":70,"risk_level":"low risk"},{"age":50,"systolic_bp":140,"diastolic_bp":90,"bs":15,"heart_rate":77,"risk_level":"high risk"},{"age":25,"systolic_bp":140,"diastolic_bp":100,"bs":7.2,"heart_rate":80,"risk_level":"high risk"},{"age":55,"systolic_bp":140,"diastolic_bp":80,"bs":7.2,"heart_rate":76,"risk_level":"high risk"},{"age":20,"systolic_bp":110,"diastolic_bp":60,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":40,"systolic_bp":140,"diastolic_bp":100,"bs":18,"heart_rate":77,"risk_level":"high risk"},{"age":28,"systolic_bp":120,"diastolic_bp":80,"bs":9,"heart_rate":76,"risk_level":"high risk"},{"age":32,"systolic_bp":140,"diastolic_bp":100,"bs":8,"heart_rate":70,"risk_level":"high risk"},{"age":17,"systolic_bp":90,"diastolic_bp":60,"bs":11,"heart_rate":78,"risk_level":"high risk"},{"age":17,"systolic_bp":90,"diastolic_bp":63,"bs":8,"heart_rate":70,"risk_level":"high risk"},{"age":25,"systolic_bp":120,"diastolic_bp":90,"bs":12,"heart_rate":80,"risk_level":"high risk"},{"age":17,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":76,"risk_level":"high risk"},{"age":19,"systolic_bp":90,"diastolic_bp":65,"bs":11,"heart_rate":70,"risk_level":"high risk"},{"age":15,"systolic_bp":80,"diastolic_bp":60,"bs":7,"heart_rate":80,"risk_level":"low risk"},{"age":32,"systolic_bp":120,"diastolic_bp":65,"bs":6,"heart_rate":76,"risk_level":"mid risk"},{"age":12,"systolic_bp":95,"diastolic_bp":60,"bs":7.2,"heart_rate":77,"risk_level":"low risk"},{"age":37,"systolic_bp":120,"diastolic_bp":90,"bs":11,"heart_rate":88,"risk_level":"high risk"},{"age":18,"systolic_bp":100,"diastolic_bp":70,"bs":6.8,"heart_rate":76,"risk_level":"low risk"},{"age":21,"systolic_bp":100,"diastolic_bp":85,"bs":6.9,"heart_rate":70,"risk_level":"low risk"},{"age":17,"systolic_bp":110,"diastolic_bp":75,"bs":13,"heart_rate":76,"risk_level":"high risk"},{"age":25,"systolic_bp":120,"diastolic_bp":90,"bs":15,"heart_rate":80,"risk_level":"high risk"},{"age":10,"systolic_bp":85,"diastolic_bp":65,"bs":6.9,"heart_rate":70,"risk_level":"low risk"},{"age":12,"systolic_bp":95,"diastolic_bp":60,"bs":6.9,"heart_rate":65,"risk_level":"low risk"},{"age":28,"systolic_bp":120,"diastolic_bp":90,"bs":6.9,"heart_rate":70,"risk_level":"low risk"},{"age":40,"systolic_bp":120,"diastolic_bp":90,"bs":6.9,"heart_rate":80,"risk_level":"low risk"},{"age":55,"systolic_bp":110,"diastolic_bp":85,"bs":6.9,"heart_rate":88,"risk_level":"low risk"},{"age":25,"systolic_bp":100,"diastolic_bp":90,"bs":6.9,"heart_rate":76,"risk_level":"low risk"},{"age":35,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":80,"risk_level":"low risk"},{"age":21,"systolic_bp":90,"diastolic_bp":65,"bs":6.9,"heart_rate":76,"risk_level":"low risk"},{"age":18,"systolic_bp":90,"diastolic_bp":60,"bs":6.9,"heart_rate":70,"risk_level":"low risk"},{"age":21,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":76,"risk_level":"low risk"},{"age":16,"systolic_bp":100,"diastolic_bp":70,"bs":6.9,"heart_rate":80,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":75,"bs":6.9,"heart_rate":66,"risk_level":"low risk"},{"age":40,"systolic_bp":160,"diastolic_bp":100,"bs":19,"heart_rate":77,"risk_level":"high risk"},{"age":32,"systolic_bp":140,"diastolic_bp":90,"bs":18,"heart_rate":88,"risk_level":"high risk"},{"age":22,"systolic_bp":100,"diastolic_bp":65,"bs":6.9,"heart_rate":70,"risk_level":"low risk"},{"age":49,"systolic_bp":120,"diastolic_bp":90,"bs":6.9,"heart_rate":77,"risk_level":"low risk"},{"age":28,"systolic_bp":90,"diastolic_bp":60,"bs":6.9,"heart_rate":82,"risk_level":"low risk"},{"age":12,"systolic_bp":90,"diastolic_bp":60,"bs":8,"heart_rate":66,"risk_level":"high risk"},{"age":20,"systolic_bp":100,"diastolic_bp":90,"bs":7,"heart_rate":88,"risk_level":"low risk"},{"age":23,"systolic_bp":100,"diastolic_bp":85,"bs":7,"heart_rate":66,"risk_level":"low risk"},{"age":22,"systolic_bp":120,"diastolic_bp":90,"bs":7,"heart_rate":82,"risk_level":"low risk"},{"age":21,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":77,"risk_level":"low risk"},{"age":35,"systolic_bp":140,"diastolic_bp":100,"bs":9,"heart_rate":66,"risk_level":"high risk"},{"age":54,"systolic_bp":140,"diastolic_bp":100,"bs":15,"heart_rate":66,"risk_level":"high risk"},{"age":40,"systolic_bp":120,"diastolic_bp":95,"bs":11,"heart_rate":80,"risk_level":"high risk"},{"age":21,"systolic_bp":75,"diastolic_bp":50,"bs":7.7,"heart_rate":60,"risk_level":"low risk"},{"age":12,"systolic_bp":90,"diastolic_bp":60,"bs":11,"heart_rate":60,"risk_level":"high risk"},{"age":60,"systolic_bp":120,"diastolic_bp":85,"bs":15,"heart_rate":60,"risk_level":"high risk"},{"age":55,"systolic_bp":140,"diastolic_bp":95,"bs":19,"heart_rate":77,"risk_level":"high risk"},{"age":50,"systolic_bp":130,"diastolic_bp":100,"bs":16,"heart_rate":76,"risk_level":"high risk"},{"age":60,"systolic_bp":120,"diastolic_bp":80,"bs":7.7,"heart_rate":75,"risk_level":"low risk"},{"age":55,"systolic_bp":100,"diastolic_bp":65,"bs":7.7,"heart_rate":66,"risk_level":"low risk"},{"age":45,"systolic_bp":120,"diastolic_bp":95,"bs":7.7,"heart_rate":66,"risk_level":"low risk"},{"age":35,"systolic_bp":100,"diastolic_bp":70,"bs":7.7,"heart_rate":66,"risk_level":"low risk"},{"age":22,"systolic_bp":120,"diastolic_bp":85,"bs":7.7,"heart_rate":88,"risk_level":"low risk"},{"age":13,"systolic_bp":90,"diastolic_bp":65,"bs":9,"heart_rate":80,"risk_level":"high risk"},{"age":23,"systolic_bp":120,"diastolic_bp":90,"bs":7.7,"heart_rate":60,"risk_level":"low risk"},{"age":17,"systolic_bp":90,"diastolic_bp":65,"bs":7.7,"heart_rate":67,"risk_level":"high risk"},{"age":26,"systolic_bp":85,"diastolic_bp":60,"bs":6,"heart_rate":86,"risk_level":"mid risk"},{"age":50,"systolic_bp":120,"diastolic_bp":80,"bs":7.7,"heart_rate":70,"risk_level":"low risk"},{"age":19,"systolic_bp":90,"diastolic_bp":70,"bs":7.7,"heart_rate":80,"risk_level":"low risk"},{"age":30,"systolic_bp":120,"diastolic_bp":80,"bs":7.7,"heart_rate":70,"risk_level":"low risk"},{"age":31,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"low risk"},{"age":23,"systolic_bp":120,"diastolic_bp":80,"bs":7.7,"heart_rate":70,"risk_level":"low risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":7.7,"heart_rate":78,"risk_level":"mid risk"},{"age":17,"systolic_bp":85,"diastolic_bp":60,"bs":6.3,"heart_rate":86,"risk_level":"high risk"},{"age":32,"systolic_bp":120,"diastolic_bp":90,"bs":7.7,"heart_rate":70,"risk_level":"low risk"},{"age":42,"systolic_bp":120,"diastolic_bp":80,"bs":7.7,"heart_rate":70,"risk_level":"low risk"},{"age":23,"systolic_bp":90,"diastolic_bp":60,"bs":7.7,"heart_rate":76,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":15,"systolic_bp":75,"diastolic_bp":49,"bs":7.7,"heart_rate":77,"risk_level":"low risk"},{"age":40,"systolic_bp":120,"diastolic_bp":75,"bs":7.7,"heart_rate":70,"risk_level":"high risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"high risk"},{"age":15,"systolic_bp":120,"diastolic_bp":80,"bs":7.7,"heart_rate":70,"risk_level":"low risk"},{"age":25,"systolic_bp":120,"diastolic_bp":80,"bs":7.7,"heart_rate":66,"risk_level":"low risk"},{"age":22,"systolic_bp":100,"diastolic_bp":65,"bs":6.9,"heart_rate":80,"risk_level":"low risk"},{"age":12,"systolic_bp":120,"diastolic_bp":95,"bs":6.9,"heart_rate":60,"risk_level":"low risk"},{"age":35,"systolic_bp":100,"diastolic_bp":70,"bs":6.9,"heart_rate":60,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":85,"bs":6.9,"heart_rate":60,"risk_level":"low risk"},{"age":60,"systolic_bp":90,"diastolic_bp":65,"bs":6.9,"heart_rate":77,"risk_level":"low risk"},{"age":55,"systolic_bp":120,"diastolic_bp":90,"bs":6.9,"heart_rate":76,"risk_level":"low risk"},{"age":35,"systolic_bp":90,"diastolic_bp":65,"bs":6.9,"heart_rate":75,"risk_level":"low risk"},{"age":51,"systolic_bp":85,"diastolic_bp":60,"bs":6.9,"heart_rate":66,"risk_level":"low risk"},{"age":62,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":66,"risk_level":"low risk"},{"age":25,"systolic_bp":90,"diastolic_bp":70,"bs":6.9,"heart_rate":66,"risk_level":"low risk"},{"age":21,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":88,"risk_level":"low risk"},{"age":22,"systolic_bp":120,"diastolic_bp":60,"bs":15,"heart_rate":80,"risk_level":"high risk"},{"age":55,"systolic_bp":120,"diastolic_bp":90,"bs":18,"heart_rate":60,"risk_level":"high risk"},{"age":54,"systolic_bp":130,"diastolic_bp":70,"bs":12,"heart_rate":67,"risk_level":"mid risk"},{"age":35,"systolic_bp":85,"diastolic_bp":60,"bs":19,"heart_rate":86,"risk_level":"high risk"},{"age":43,"systolic_bp":120,"diastolic_bp":90,"bs":18,"heart_rate":70,"risk_level":"high risk"},{"age":12,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":80,"risk_level":"low risk"},{"age":65,"systolic_bp":90,"diastolic_bp":60,"bs":6.9,"heart_rate":70,"risk_level":"low risk"},{"age":60,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":76,"risk_level":"low risk"},{"age":25,"systolic_bp":120,"diastolic_bp":90,"bs":6.9,"heart_rate":70,"risk_level":"low risk"},{"age":22,"systolic_bp":90,"diastolic_bp":65,"bs":6.9,"heart_rate":78,"risk_level":"low risk"},{"age":66,"systolic_bp":85,"diastolic_bp":60,"bs":6.9,"heart_rate":86,"risk_level":"low risk"},{"age":56,"systolic_bp":120,"diastolic_bp":80,"bs":13,"heart_rate":70,"risk_level":"high risk"},{"age":35,"systolic_bp":90,"diastolic_bp":70,"bs":6.9,"heart_rate":70,"risk_level":"low risk"},{"age":43,"systolic_bp":120,"diastolic_bp":80,"bs":15,"heart_rate":76,"risk_level":"high risk"},{"age":35,"systolic_bp":120,"diastolic_bp":60,"bs":6.9,"heart_rate":70,"risk_level":"low risk"},{"age":44,"systolic_bp":120,"diastolic_bp":90,"bs":16,"heart_rate":80,"risk_level":"mid risk"},{"age":23,"systolic_bp":130,"diastolic_bp":70,"bs":6.9,"heart_rate":70,"risk_level":"mid risk"},{"age":22,"systolic_bp":85,"diastolic_bp":60,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":55,"systolic_bp":120,"diastolic_bp":90,"bs":12,"heart_rate":70,"risk_level":"mid risk"},{"age":35,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":78,"risk_level":"mid risk"},{"age":21,"systolic_bp":90,"diastolic_bp":60,"bs":6.9,"heart_rate":86,"risk_level":"mid risk"},{"age":45,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":70,"risk_level":"low risk"},{"age":70,"systolic_bp":85,"diastolic_bp":60,"bs":6.9,"heart_rate":70,"risk_level":"low risk"},{"age":65,"systolic_bp":120,"diastolic_bp":90,"bs":6.9,"heart_rate":76,"risk_level":"low risk"},{"age":55,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":80,"risk_level":"low risk"},{"age":45,"systolic_bp":90,"diastolic_bp":60,"bs":18,"heart_rate":70,"risk_level":"high risk"},{"age":22,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":76,"risk_level":"low risk"},{"age":16,"systolic_bp":90,"diastolic_bp":65,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":12,"systolic_bp":95,"diastolic_bp":60,"bs":6.9,"heart_rate":77,"risk_level":"low risk"},{"age":37,"systolic_bp":120,"diastolic_bp":90,"bs":11,"heart_rate":88,"risk_level":"high risk"},{"age":18,"systolic_bp":100,"diastolic_bp":70,"bs":6.9,"heart_rate":76,"risk_level":"low risk"},{"age":21,"systolic_bp":100,"diastolic_bp":85,"bs":6.9,"heart_rate":70,"risk_level":"low risk"},{"age":17,"systolic_bp":110,"diastolic_bp":75,"bs":6.9,"heart_rate":76,"risk_level":"high risk"},{"age":25,"systolic_bp":120,"diastolic_bp":90,"bs":6.9,"heart_rate":80,"risk_level":"low risk"},{"age":33,"systolic_bp":115,"diastolic_bp":65,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":12,"systolic_bp":95,"diastolic_bp":60,"bs":6.9,"heart_rate":65,"risk_level":"mid risk"},{"age":28,"systolic_bp":120,"diastolic_bp":90,"bs":6.9,"heart_rate":70,"risk_level":"mid risk"},{"age":40,"systolic_bp":120,"diastolic_bp":90,"bs":6.9,"heart_rate":80,"risk_level":"high risk"},{"age":55,"systolic_bp":110,"diastolic_bp":85,"bs":6.9,"heart_rate":88,"risk_level":"high risk"},{"age":25,"systolic_bp":100,"diastolic_bp":90,"bs":6.9,"heart_rate":76,"risk_level":"high risk"},{"age":35,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":80,"risk_level":"high risk"},{"age":21,"systolic_bp":90,"diastolic_bp":65,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":18,"systolic_bp":90,"diastolic_bp":60,"bs":6.9,"heart_rate":70,"risk_level":"mid risk"},{"age":21,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":16,"systolic_bp":100,"diastolic_bp":70,"bs":6.9,"heart_rate":80,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":75,"bs":6.9,"heart_rate":66,"risk_level":"mid risk"},{"age":40,"systolic_bp":160,"diastolic_bp":100,"bs":19,"heart_rate":77,"risk_level":"high risk"},{"age":32,"systolic_bp":140,"diastolic_bp":90,"bs":18,"heart_rate":88,"risk_level":"high risk"},{"age":23,"systolic_bp":100,"diastolic_bp":85,"bs":6.9,"heart_rate":66,"risk_level":"mid risk"},{"age":22,"systolic_bp":120,"diastolic_bp":90,"bs":7.8,"heart_rate":82,"risk_level":"mid risk"},{"age":21,"systolic_bp":120,"diastolic_bp":80,"bs":7.8,"heart_rate":77,"risk_level":"low risk"},{"age":35,"systolic_bp":140,"diastolic_bp":100,"bs":7.8,"heart_rate":66,"risk_level":"high risk"},{"age":54,"systolic_bp":140,"diastolic_bp":100,"bs":15,"heart_rate":66,"risk_level":"high risk"},{"age":40,"systolic_bp":120,"diastolic_bp":95,"bs":11,"heart_rate":80,"risk_level":"high risk"},{"age":21,"systolic_bp":75,"diastolic_bp":50,"bs":7.8,"heart_rate":60,"risk_level":"low risk"},{"age":12,"systolic_bp":90,"diastolic_bp":60,"bs":7.8,"heart_rate":60,"risk_level":"high risk"},{"age":60,"systolic_bp":120,"diastolic_bp":85,"bs":15,"heart_rate":60,"risk_level":"mid risk"},{"age":55,"systolic_bp":140,"diastolic_bp":95,"bs":19,"heart_rate":77,"risk_level":"high risk"},{"age":50,"systolic_bp":130,"diastolic_bp":100,"bs":16,"heart_rate":75,"risk_level":"high risk"},{"age":60,"systolic_bp":120,"diastolic_bp":80,"bs":7.8,"heart_rate":75,"risk_level":"high risk"},{"age":55,"systolic_bp":100,"diastolic_bp":65,"bs":7.8,"heart_rate":66,"risk_level":"low risk"},{"age":45,"systolic_bp":120,"diastolic_bp":95,"bs":7.8,"heart_rate":66,"risk_level":"low risk"},{"age":35,"systolic_bp":100,"diastolic_bp":70,"bs":7.8,"heart_rate":66,"risk_level":"low risk"},{"age":22,"systolic_bp":120,"diastolic_bp":85,"bs":7.8,"heart_rate":88,"risk_level":"low risk"},{"age":13,"systolic_bp":90,"diastolic_bp":65,"bs":7.8,"heart_rate":80,"risk_level":"mid risk"},{"age":23,"systolic_bp":120,"diastolic_bp":90,"bs":7.8,"heart_rate":60,"risk_level":"mid risk"},{"age":17,"systolic_bp":90,"diastolic_bp":65,"bs":7.8,"heart_rate":67,"risk_level":"high risk"},{"age":28,"systolic_bp":115,"diastolic_bp":60,"bs":7.8,"heart_rate":86,"risk_level":"mid risk"},{"age":50,"systolic_bp":120,"diastolic_bp":80,"bs":7.8,"heart_rate":70,"risk_level":"mid risk"},{"age":19,"systolic_bp":90,"diastolic_bp":70,"bs":7.8,"heart_rate":80,"risk_level":"low risk"},{"age":30,"systolic_bp":120,"diastolic_bp":80,"bs":7.8,"heart_rate":70,"risk_level":"low risk"},{"age":31,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"low risk"},{"age":23,"systolic_bp":120,"diastolic_bp":70,"bs":7.8,"heart_rate":70,"risk_level":"low risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":7.8,"heart_rate":78,"risk_level":"mid risk"},{"age":17,"systolic_bp":85,"diastolic_bp":69,"bs":7.8,"heart_rate":86,"risk_level":"high risk"},{"age":32,"systolic_bp":120,"diastolic_bp":90,"bs":7.8,"heart_rate":70,"risk_level":"low risk"},{"age":42,"systolic_bp":120,"diastolic_bp":80,"bs":7.8,"heart_rate":70,"risk_level":"low risk"},{"age":23,"systolic_bp":90,"diastolic_bp":60,"bs":7.8,"heart_rate":76,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":15,"systolic_bp":76,"diastolic_bp":49,"bs":7.8,"heart_rate":77,"risk_level":"low risk"},{"age":20,"systolic_bp":120,"diastolic_bp":75,"bs":7.8,"heart_rate":70,"risk_level":"low risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"high risk"},{"age":15,"systolic_bp":120,"diastolic_bp":80,"bs":7.8,"heart_rate":70,"risk_level":"low risk"},{"age":25,"systolic_bp":120,"diastolic_bp":80,"bs":7.8,"heart_rate":66,"risk_level":"low risk"},{"age":22,"systolic_bp":100,"diastolic_bp":65,"bs":7.8,"heart_rate":80,"risk_level":"low risk"},{"age":12,"systolic_bp":120,"diastolic_bp":95,"bs":7.8,"heart_rate":60,"risk_level":"low risk"},{"age":35,"systolic_bp":100,"diastolic_bp":70,"bs":7.8,"heart_rate":60,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":85,"bs":7.8,"heart_rate":60,"risk_level":"mid risk"},{"age":60,"systolic_bp":90,"diastolic_bp":65,"bs":6.8,"heart_rate":77,"risk_level":"mid risk"},{"age":55,"systolic_bp":120,"diastolic_bp":90,"bs":6.8,"heart_rate":66,"risk_level":"mid risk"},{"age":25,"systolic_bp":120,"diastolic_bp":80,"bs":6.8,"heart_rate":66,"risk_level":"mid risk"},{"age":22,"systolic_bp":100,"diastolic_bp":65,"bs":6.8,"heart_rate":88,"risk_level":"low risk"},{"age":12,"systolic_bp":120,"diastolic_bp":95,"bs":6.8,"heart_rate":60,"risk_level":"mid risk"},{"age":35,"systolic_bp":100,"diastolic_bp":70,"bs":6.8,"heart_rate":60,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":90,"bs":6.8,"heart_rate":60,"risk_level":"mid risk"},{"age":60,"systolic_bp":90,"diastolic_bp":65,"bs":6.8,"heart_rate":77,"risk_level":"mid risk"},{"age":55,"systolic_bp":120,"diastolic_bp":90,"bs":6.8,"heart_rate":78,"risk_level":"low risk"},{"age":50,"systolic_bp":130,"diastolic_bp":80,"bs":16,"heart_rate":76,"risk_level":"mid risk"},{"age":27,"systolic_bp":120,"diastolic_bp":90,"bs":6.8,"heart_rate":68,"risk_level":"mid risk"},{"age":60,"systolic_bp":140,"diastolic_bp":90,"bs":12,"heart_rate":77,"risk_level":"high risk"},{"age":55,"systolic_bp":100,"diastolic_bp":70,"bs":6.8,"heart_rate":80,"risk_level":"mid risk"},{"age":60,"systolic_bp":140,"diastolic_bp":80,"bs":16,"heart_rate":66,"risk_level":"high risk"},{"age":12,"systolic_bp":120,"diastolic_bp":90,"bs":6.8,"heart_rate":80,"risk_level":"mid risk"},{"age":17,"systolic_bp":140,"diastolic_bp":100,"bs":6.8,"heart_rate":80,"risk_level":"high risk"},{"age":60,"systolic_bp":120,"diastolic_bp":80,"bs":6.8,"heart_rate":77,"risk_level":"mid risk"},{"age":22,"systolic_bp":100,"diastolic_bp":65,"bs":6.8,"heart_rate":88,"risk_level":"low risk"},{"age":36,"systolic_bp":140,"diastolic_bp":100,"bs":6.8,"heart_rate":76,"risk_level":"high risk"},{"age":22,"systolic_bp":90,"diastolic_bp":60,"bs":6.8,"heart_rate":77,"risk_level":"low risk"},{"age":25,"systolic_bp":120,"diastolic_bp":100,"bs":6.8,"heart_rate":60,"risk_level":"mid risk"},{"age":35,"systolic_bp":100,"diastolic_bp":60,"bs":15,"heart_rate":80,"risk_level":"high risk"},{"age":40,"systolic_bp":140,"diastolic_bp":100,"bs":13,"heart_rate":66,"risk_level":"high risk"},{"age":27,"systolic_bp":120,"diastolic_bp":70,"bs":6.8,"heart_rate":77,"risk_level":"low risk"},{"age":36,"systolic_bp":140,"diastolic_bp":100,"bs":6.8,"heart_rate":76,"risk_level":"high risk"},{"age":22,"systolic_bp":90,"diastolic_bp":60,"bs":6.8,"heart_rate":77,"risk_level":"mid risk"},{"age":25,"systolic_bp":120,"diastolic_bp":100,"bs":6.8,"heart_rate":60,"risk_level":"low risk"},{"age":35,"systolic_bp":100,"diastolic_bp":60,"bs":15,"heart_rate":80,"risk_level":"high risk"},{"age":40,"systolic_bp":140,"diastolic_bp":100,"bs":13,"heart_rate":66,"risk_level":"high risk"},{"age":27,"systolic_bp":120,"diastolic_bp":70,"bs":6.8,"heart_rate":77,"risk_level":"low risk"},{"age":27,"systolic_bp":120,"diastolic_bp":70,"bs":6.8,"heart_rate":77,"risk_level":"low risk"},{"age":65,"systolic_bp":130,"diastolic_bp":80,"bs":15,"heart_rate":86,"risk_level":"high risk"},{"age":35,"systolic_bp":140,"diastolic_bp":80,"bs":13,"heart_rate":70,"risk_level":"high risk"},{"age":29,"systolic_bp":90,"diastolic_bp":70,"bs":10,"heart_rate":80,"risk_level":"high risk"},{"age":30,"systolic_bp":120,"diastolic_bp":80,"bs":6.8,"heart_rate":70,"risk_level":"mid risk"},{"age":35,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"mid risk"},{"age":23,"systolic_bp":140,"diastolic_bp":90,"bs":6.8,"heart_rate":70,"risk_level":"high risk"},{"age":23,"systolic_bp":130,"diastolic_bp":70,"bs":6.8,"heart_rate":78,"risk_level":"mid risk"},{"age":35,"systolic_bp":85,"diastolic_bp":60,"bs":11,"heart_rate":86,"risk_level":"high risk"},{"age":32,"systolic_bp":120,"diastolic_bp":90,"bs":6.8,"heart_rate":70,"risk_level":"low risk"},{"age":43,"systolic_bp":130,"diastolic_bp":80,"bs":18,"heart_rate":70,"risk_level":"mid risk"},{"age":23,"systolic_bp":99,"diastolic_bp":60,"bs":6.8,"heart_rate":76,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":15,"systolic_bp":76,"diastolic_bp":49,"bs":6.8,"heart_rate":77,"risk_level":"low risk"},{"age":30,"systolic_bp":120,"diastolic_bp":75,"bs":6.8,"heart_rate":70,"risk_level":"mid risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"high risk"},{"age":15,"systolic_bp":120,"diastolic_bp":80,"bs":6.8,"heart_rate":70,"risk_level":"low risk"},{"age":48,"systolic_bp":140,"diastolic_bp":90,"bs":15,"heart_rate":90,"risk_level":"high risk"},{"age":25,"systolic_bp":140,"diastolic_bp":100,"bs":6.8,"heart_rate":80,"risk_level":"high risk"},{"age":29,"systolic_bp":100,"diastolic_bp":70,"bs":6.8,"heart_rate":80,"risk_level":"low risk"},{"age":32,"systolic_bp":120,"diastolic_bp":80,"bs":6.8,"heart_rate":70,"risk_level":"mid risk"},{"age":35,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"low risk"},{"age":23,"systolic_bp":140,"diastolic_bp":90,"bs":6.8,"heart_rate":70,"risk_level":"high risk"},{"age":23,"systolic_bp":130,"diastolic_bp":70,"bs":6.8,"heart_rate":78,"risk_level":"mid risk"},{"age":34,"systolic_bp":85,"diastolic_bp":60,"bs":11,"heart_rate":86,"risk_level":"high risk"},{"age":32,"systolic_bp":120,"diastolic_bp":90,"bs":6.8,"heart_rate":70,"risk_level":"low risk"},{"age":42,"systolic_bp":130,"diastolic_bp":80,"bs":18,"heart_rate":70,"risk_level":"mid risk"},{"age":23,"systolic_bp":90,"diastolic_bp":60,"bs":6.8,"heart_rate":76,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":15,"systolic_bp":76,"diastolic_bp":49,"bs":6.8,"heart_rate":77,"risk_level":"low risk"},{"age":20,"systolic_bp":120,"diastolic_bp":75,"bs":6.8,"heart_rate":70,"risk_level":"low risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"low risk"},{"age":15,"systolic_bp":120,"diastolic_bp":80,"bs":6.8,"heart_rate":70,"risk_level":"low risk"},{"age":50,"systolic_bp":140,"diastolic_bp":90,"bs":15,"heart_rate":90,"risk_level":"high risk"},{"age":25,"systolic_bp":140,"diastolic_bp":100,"bs":6.8,"heart_rate":80,"risk_level":"high risk"},{"age":30,"systolic_bp":120,"diastolic_bp":80,"bs":6.8,"heart_rate":76,"risk_level":"low risk"},{"age":31,"systolic_bp":110,"diastolic_bp":90,"bs":6.8,"heart_rate":70,"risk_level":"mid risk"},{"age":42,"systolic_bp":140,"diastolic_bp":100,"bs":18,"heart_rate":90,"risk_level":"high risk"},{"age":18,"systolic_bp":120,"diastolic_bp":80,"bs":6.8,"heart_rate":76,"risk_level":"low risk"},{"age":32,"systolic_bp":140,"diastolic_bp":100,"bs":7.9,"heart_rate":78,"risk_level":"high risk"},{"age":17,"systolic_bp":90,"diastolic_bp":60,"bs":7.9,"heart_rate":76,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":15,"systolic_bp":76,"diastolic_bp":49,"bs":7.9,"heart_rate":77,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":75,"bs":7.9,"heart_rate":70,"risk_level":"low risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"low risk"},{"age":15,"systolic_bp":120,"diastolic_bp":80,"bs":7.9,"heart_rate":70,"risk_level":"low risk"},{"age":25,"systolic_bp":120,"diastolic_bp":80,"bs":7.9,"heart_rate":66,"risk_level":"mid risk"},{"age":22,"systolic_bp":100,"diastolic_bp":65,"bs":7.9,"heart_rate":80,"risk_level":"low risk"},{"age":50,"systolic_bp":140,"diastolic_bp":95,"bs":17,"heart_rate":60,"risk_level":"high risk"},{"age":35,"systolic_bp":100,"diastolic_bp":70,"bs":7.9,"heart_rate":60,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":85,"bs":7.9,"heart_rate":60,"risk_level":"low risk"},{"age":60,"systolic_bp":90,"diastolic_bp":65,"bs":7.9,"heart_rate":77,"risk_level":"low risk"},{"age":38,"systolic_bp":135,"diastolic_bp":60,"bs":7.9,"heart_rate":86,"risk_level":"high risk"},{"age":50,"systolic_bp":120,"diastolic_bp":80,"bs":7.9,"heart_rate":70,"risk_level":"low risk"},{"age":39,"systolic_bp":90,"diastolic_bp":70,"bs":9,"heart_rate":80,"risk_level":"high risk"},{"age":30,"systolic_bp":140,"diastolic_bp":100,"bs":15,"heart_rate":70,"risk_level":"high risk"},{"age":31,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"mid risk"},{"age":23,"systolic_bp":120,"diastolic_bp":90,"bs":7.9,"heart_rate":70,"risk_level":"mid risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":7.9,"heart_rate":78,"risk_level":"mid risk"},{"age":17,"systolic_bp":85,"diastolic_bp":60,"bs":7.9,"heart_rate":86,"risk_level":"low risk"},{"age":32,"systolic_bp":120,"diastolic_bp":90,"bs":7.9,"heart_rate":70,"risk_level":"low risk"},{"age":42,"systolic_bp":120,"diastolic_bp":80,"bs":7.9,"heart_rate":70,"risk_level":"low risk"},{"age":23,"systolic_bp":90,"diastolic_bp":60,"bs":7.9,"heart_rate":76,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"low risk"},{"age":15,"systolic_bp":76,"diastolic_bp":49,"bs":7.9,"heart_rate":77,"risk_level":"low risk"},{"age":16,"systolic_bp":120,"diastolic_bp":75,"bs":7.9,"heart_rate":7,"risk_level":"low risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"mid risk"},{"age":15,"systolic_bp":120,"diastolic_bp":80,"bs":7.9,"heart_rate":70,"risk_level":"low risk"},{"age":63,"systolic_bp":140,"diastolic_bp":90,"bs":15,"heart_rate":90,"risk_level":"high risk"},{"age":25,"systolic_bp":140,"diastolic_bp":100,"bs":7.9,"heart_rate":80,"risk_level":"high risk"},{"age":30,"systolic_bp":120,"diastolic_bp":80,"bs":7.9,"heart_rate":76,"risk_level":"high risk"},{"age":17,"systolic_bp":70,"diastolic_bp":50,"bs":7.9,"heart_rate":70,"risk_level":"low risk"},{"age":55,"systolic_bp":140,"diastolic_bp":100,"bs":18,"heart_rate":90,"risk_level":"high risk"},{"age":18,"systolic_bp":120,"diastolic_bp":80,"bs":7.9,"heart_rate":76,"risk_level":"mid risk"},{"age":32,"systolic_bp":140,"diastolic_bp":100,"bs":7.9,"heart_rate":78,"risk_level":"high risk"},{"age":17,"systolic_bp":90,"diastolic_bp":60,"bs":7.5,"heart_rate":76,"risk_level":"low risk"},{"age":17,"systolic_bp":90,"diastolic_bp":63,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":25,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":80,"risk_level":"low risk"},{"age":17,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":76,"risk_level":"low risk"},{"age":19,"systolic_bp":90,"diastolic_bp":65,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":15,"systolic_bp":80,"diastolic_bp":60,"bs":7.5,"heart_rate":80,"risk_level":"low risk"},{"age":60,"systolic_bp":90,"diastolic_bp":65,"bs":7.5,"heart_rate":77,"risk_level":"low risk"},{"age":18,"systolic_bp":85,"diastolic_bp":60,"bs":7.5,"heart_rate":86,"risk_level":"mid risk"},{"age":50,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":19,"systolic_bp":90,"diastolic_bp":70,"bs":7.5,"heart_rate":80,"risk_level":"low risk"},{"age":30,"systolic_bp":140,"diastolic_bp":100,"bs":15,"heart_rate":70,"risk_level":"high risk"},{"age":31,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"low risk"},{"age":23,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":7.5,"heart_rate":78,"risk_level":"mid risk"},{"age":17,"systolic_bp":85,"diastolic_bp":60,"bs":7.5,"heart_rate":86,"risk_level":"low risk"},{"age":32,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":42,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":42,"systolic_bp":90,"diastolic_bp":60,"bs":7.5,"heart_rate":76,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"low risk"},{"age":15,"systolic_bp":78,"diastolic_bp":49,"bs":7.5,"heart_rate":77,"risk_level":"low risk"},{"age":23,"systolic_bp":120,"diastolic_bp":75,"bs":8,"heart_rate":70,"risk_level":"mid risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"high risk"},{"age":15,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":70,"risk_level":"mid risk"},{"age":49,"systolic_bp":140,"diastolic_bp":90,"bs":15,"heart_rate":90,"risk_level":"high risk"},{"age":25,"systolic_bp":140,"diastolic_bp":100,"bs":7.5,"heart_rate":80,"risk_level":"high risk"},{"age":30,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":76,"risk_level":"mid risk"},{"age":16,"systolic_bp":70,"diastolic_bp":50,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":16,"systolic_bp":100,"diastolic_bp":70,"bs":7.5,"heart_rate":80,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":75,"bs":7.5,"heart_rate":66,"risk_level":"low risk"},{"age":40,"systolic_bp":160,"diastolic_bp":100,"bs":19,"heart_rate":77,"risk_level":"high risk"},{"age":32,"systolic_bp":140,"diastolic_bp":90,"bs":18,"heart_rate":88,"risk_level":"high risk"},{"age":22,"systolic_bp":100,"diastolic_bp":65,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":49,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":77,"risk_level":"low risk"},{"age":28,"systolic_bp":90,"diastolic_bp":60,"bs":7.5,"heart_rate":82,"risk_level":"low risk"},{"age":12,"systolic_bp":90,"diastolic_bp":60,"bs":7.5,"heart_rate":66,"risk_level":"low risk"},{"age":20,"systolic_bp":100,"diastolic_bp":90,"bs":7.5,"heart_rate":88,"risk_level":"low risk"},{"age":23,"systolic_bp":100,"diastolic_bp":85,"bs":7.5,"heart_rate":66,"risk_level":"low risk"},{"age":22,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":82,"risk_level":"low risk"},{"age":21,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":77,"risk_level":"low risk"},{"age":35,"systolic_bp":140,"diastolic_bp":100,"bs":7.5,"heart_rate":66,"risk_level":"high risk"},{"age":54,"systolic_bp":140,"diastolic_bp":100,"bs":15,"heart_rate":66,"risk_level":"high risk"},{"age":40,"systolic_bp":120,"diastolic_bp":95,"bs":11,"heart_rate":80,"risk_level":"mid risk"},{"age":21,"systolic_bp":75,"diastolic_bp":50,"bs":7.5,"heart_rate":60,"risk_level":"low risk"},{"age":12,"systolic_bp":90,"diastolic_bp":60,"bs":7.5,"heart_rate":60,"risk_level":"low risk"},{"age":60,"systolic_bp":120,"diastolic_bp":85,"bs":15,"heart_rate":60,"risk_level":"mid risk"},{"age":55,"systolic_bp":140,"diastolic_bp":95,"bs":19,"heart_rate":77,"risk_level":"high risk"},{"age":50,"systolic_bp":130,"diastolic_bp":100,"bs":16,"heart_rate":75,"risk_level":"mid risk"},{"age":60,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":75,"risk_level":"low risk"},{"age":55,"systolic_bp":100,"diastolic_bp":65,"bs":7.5,"heart_rate":66,"risk_level":"low risk"},{"age":45,"systolic_bp":120,"diastolic_bp":95,"bs":7.5,"heart_rate":66,"risk_level":"low risk"},{"age":35,"systolic_bp":100,"diastolic_bp":70,"bs":7.5,"heart_rate":66,"risk_level":"low risk"},{"age":22,"systolic_bp":120,"diastolic_bp":85,"bs":7.5,"heart_rate":88,"risk_level":"low risk"},{"age":13,"systolic_bp":90,"diastolic_bp":65,"bs":7.5,"heart_rate":80,"risk_level":"low risk"},{"age":23,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":60,"risk_level":"low risk"},{"age":17,"systolic_bp":90,"diastolic_bp":65,"bs":7.5,"heart_rate":67,"risk_level":"low risk"},{"age":28,"systolic_bp":115,"diastolic_bp":60,"bs":7.5,"heart_rate":86,"risk_level":"mid risk"},{"age":59,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":29,"systolic_bp":120,"diastolic_bp":70,"bs":9,"heart_rate":80,"risk_level":"high risk"},{"age":23,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":31,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"mid risk"},{"age":23,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":70,"risk_level":"mid risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":7.5,"heart_rate":78,"risk_level":"mid risk"},{"age":17,"systolic_bp":85,"diastolic_bp":60,"bs":7.5,"heart_rate":86,"risk_level":"low risk"},{"age":32,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":42,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":23,"systolic_bp":90,"diastolic_bp":60,"bs":7.5,"heart_rate":76,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"low risk"},{"age":15,"systolic_bp":78,"diastolic_bp":49,"bs":7.5,"heart_rate":77,"risk_level":"low risk"},{"age":20,"systolic_bp":120,"diastolic_bp":75,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"high risk"},{"age":15,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":24,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":66,"risk_level":"low risk"},{"age":16,"systolic_bp":100,"diastolic_bp":70,"bs":7.5,"heart_rate":80,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":76,"bs":7.5,"heart_rate":66,"risk_level":"low risk"},{"age":40,"systolic_bp":160,"diastolic_bp":100,"bs":19,"heart_rate":77,"risk_level":"high risk"},{"age":32,"systolic_bp":140,"diastolic_bp":90,"bs":18,"heart_rate":88,"risk_level":"high risk"},{"age":22,"systolic_bp":100,"diastolic_bp":65,"bs":7.5,"heart_rate":70,"risk_level":"mid risk"},{"age":49,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":77,"risk_level":"mid risk"},{"age":28,"systolic_bp":90,"diastolic_bp":60,"bs":7.5,"heart_rate":82,"risk_level":"mid risk"},{"age":12,"systolic_bp":90,"diastolic_bp":60,"bs":7.5,"heart_rate":66,"risk_level":"mid risk"},{"age":20,"systolic_bp":100,"diastolic_bp":90,"bs":7.5,"heart_rate":88,"risk_level":"mid risk"},{"age":23,"systolic_bp":100,"diastolic_bp":85,"bs":7.5,"heart_rate":66,"risk_level":"mid risk"},{"age":22,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":82,"risk_level":"mid risk"},{"age":21,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":77,"risk_level":"mid risk"},{"age":35,"systolic_bp":140,"diastolic_bp":100,"bs":7.5,"heart_rate":66,"risk_level":"high risk"},{"age":54,"systolic_bp":140,"diastolic_bp":100,"bs":15,"heart_rate":66,"risk_level":"high risk"},{"age":40,"systolic_bp":120,"diastolic_bp":95,"bs":11,"heart_rate":80,"risk_level":"high risk"},{"age":21,"systolic_bp":75,"diastolic_bp":50,"bs":7.5,"heart_rate":60,"risk_level":"low risk"},{"age":22,"systolic_bp":90,"diastolic_bp":60,"bs":7.5,"heart_rate":60,"risk_level":"high risk"},{"age":40,"systolic_bp":120,"diastolic_bp":85,"bs":15,"heart_rate":60,"risk_level":"high risk"},{"age":55,"systolic_bp":140,"diastolic_bp":95,"bs":19,"heart_rate":77,"risk_level":"high risk"},{"age":50,"systolic_bp":130,"diastolic_bp":100,"bs":16,"heart_rate":75,"risk_level":"high risk"},{"age":60,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":75,"risk_level":"mid risk"},{"age":40,"systolic_bp":120,"diastolic_bp":85,"bs":15,"heart_rate":60,"risk_level":"high risk"},{"age":55,"systolic_bp":140,"diastolic_bp":95,"bs":19,"heart_rate":77,"risk_level":"high risk"},{"age":50,"systolic_bp":130,"diastolic_bp":100,"bs":16,"heart_rate":75,"risk_level":"mid risk"},{"age":41,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":75,"risk_level":"low risk"},{"age":55,"systolic_bp":100,"diastolic_bp":65,"bs":7.5,"heart_rate":66,"risk_level":"low risk"},{"age":45,"systolic_bp":120,"diastolic_bp":95,"bs":7.5,"heart_rate":66,"risk_level":"low risk"},{"age":35,"systolic_bp":100,"diastolic_bp":70,"bs":7.5,"heart_rate":66,"risk_level":"low risk"},{"age":22,"systolic_bp":120,"diastolic_bp":85,"bs":7.5,"heart_rate":88,"risk_level":"low risk"},{"age":13,"systolic_bp":90,"diastolic_bp":65,"bs":7.5,"heart_rate":80,"risk_level":"high risk"},{"age":23,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":60,"risk_level":"low risk"},{"age":17,"systolic_bp":90,"diastolic_bp":65,"bs":7.5,"heart_rate":67,"risk_level":"mid risk"},{"age":27,"systolic_bp":135,"diastolic_bp":60,"bs":7.5,"heart_rate":86,"risk_level":"high risk"},{"age":50,"systolic_bp":120,"diastolic_bp":80,"bs":15,"heart_rate":70,"risk_level":"high risk"},{"age":34,"systolic_bp":110,"diastolic_bp":70,"bs":7,"heart_rate":80,"risk_level":"high risk"},{"age":32,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":31,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"low risk"},{"age":23,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":7.5,"heart_rate":78,"risk_level":"mid risk"},{"age":17,"systolic_bp":85,"diastolic_bp":60,"bs":7.5,"heart_rate":86,"risk_level":"high risk"},{"age":32,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":42,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":23,"systolic_bp":90,"diastolic_bp":60,"bs":7.5,"heart_rate":76,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":15,"systolic_bp":76,"diastolic_bp":49,"bs":7.5,"heart_rate":77,"risk_level":"low risk"},{"age":20,"systolic_bp":120,"diastolic_bp":76,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"high risk"},{"age":15,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":24,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":66,"risk_level":"low risk"},{"age":22,"systolic_bp":100,"diastolic_bp":65,"bs":12,"heart_rate":80,"risk_level":"high risk"},{"age":50,"systolic_bp":140,"diastolic_bp":95,"bs":17,"heart_rate":60,"risk_level":"high risk"},{"age":35,"systolic_bp":100,"diastolic_bp":70,"bs":11,"heart_rate":60,"risk_level":"high risk"},{"age":19,"systolic_bp":120,"diastolic_bp":85,"bs":9,"heart_rate":60,"risk_level":"mid risk"},{"age":30,"systolic_bp":90,"diastolic_bp":65,"bs":8,"heart_rate":77,"risk_level":"mid risk"},{"age":28,"systolic_bp":85,"diastolic_bp":60,"bs":9,"heart_rate":86,"risk_level":"mid risk"},{"age":50,"systolic_bp":130,"diastolic_bp":80,"bs":15,"heart_rate":86,"risk_level":"high risk"},{"age":35,"systolic_bp":140,"diastolic_bp":90,"bs":13,"heart_rate":70,"risk_level":"high risk"},{"age":29,"systolic_bp":90,"diastolic_bp":70,"bs":11,"heart_rate":80,"risk_level":"high risk"},{"age":19,"systolic_bp":120,"diastolic_bp":60,"bs":7,"heart_rate":70,"risk_level":"low risk"},{"age":46,"systolic_bp":140,"diastolic_bp":100,"bs":12,"heart_rate":90,"risk_level":"high risk"},{"age":28,"systolic_bp":95,"diastolic_bp":60,"bs":10,"heart_rate":86,"risk_level":"high risk"},{"age":50,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":39,"systolic_bp":110,"diastolic_bp":70,"bs":7.9,"heart_rate":80,"risk_level":"mid risk"},{"age":25,"systolic_bp":140,"diastolic_bp":100,"bs":15,"heart_rate":70,"risk_level":"high risk"},{"age":31,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"low risk"},{"age":23,"systolic_bp":120,"diastolic_bp":85,"bs":8,"heart_rate":70,"risk_level":"low risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":8,"heart_rate":78,"risk_level":"mid risk"},{"age":17,"systolic_bp":90,"diastolic_bp":60,"bs":9,"heart_rate":86,"risk_level":"mid risk"},{"age":32,"systolic_bp":120,"diastolic_bp":90,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":42,"systolic_bp":120,"diastolic_bp":90,"bs":9,"heart_rate":70,"risk_level":"mid risk"},{"age":23,"systolic_bp":90,"diastolic_bp":60,"bs":6.7,"heart_rate":76,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"low risk"},{"age":15,"systolic_bp":76,"diastolic_bp":68,"bs":7,"heart_rate":77,"risk_level":"low risk"},{"age":34,"systolic_bp":120,"diastolic_bp":75,"bs":8,"heart_rate":70,"risk_level":"low risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"high risk"},{"age":15,"systolic_bp":120,"diastolic_bp":80,"bs":6.6,"heart_rate":70,"risk_level":"low risk"},{"age":27,"systolic_bp":140,"diastolic_bp":90,"bs":15,"heart_rate":90,"risk_level":"high risk"},{"age":25,"systolic_bp":140,"diastolic_bp":100,"bs":12,"heart_rate":80,"risk_level":"high risk"},{"age":36,"systolic_bp":120,"diastolic_bp":90,"bs":7,"heart_rate":82,"risk_level":"mid risk"},{"age":30,"systolic_bp":120,"diastolic_bp":80,"bs":9,"heart_rate":76,"risk_level":"mid risk"},{"age":15,"systolic_bp":70,"diastolic_bp":50,"bs":6,"heart_rate":70,"risk_level":"mid risk"},{"age":40,"systolic_bp":120,"diastolic_bp":95,"bs":7,"heart_rate":70,"risk_level":"high risk"},{"age":15,"systolic_bp":90,"diastolic_bp":60,"bs":6,"heart_rate":80,"risk_level":"low risk"},{"age":21,"systolic_bp":90,"diastolic_bp":50,"bs":6.9,"heart_rate":60,"risk_level":"low risk"},{"age":15,"systolic_bp":90,"diastolic_bp":49,"bs":6,"heart_rate":77,"risk_level":"low risk"},{"age":21,"systolic_bp":90,"diastolic_bp":50,"bs":6.5,"heart_rate":60,"risk_level":"low risk"},{"age":15,"systolic_bp":90,"diastolic_bp":49,"bs":6,"heart_rate":77,"risk_level":"low risk"},{"age":15,"systolic_bp":90,"diastolic_bp":49,"bs":6.7,"heart_rate":77,"risk_level":"low risk"},{"age":15,"systolic_bp":90,"diastolic_bp":49,"bs":6,"heart_rate":77,"risk_level":"low risk"},{"age":10,"systolic_bp":100,"diastolic_bp":50,"bs":6,"heart_rate":70,"risk_level":"mid risk"},{"age":15,"systolic_bp":100,"diastolic_bp":49,"bs":6.8,"heart_rate":77,"risk_level":"low risk"},{"age":15,"systolic_bp":100,"diastolic_bp":49,"bs":6,"heart_rate":77,"risk_level":"low risk"},{"age":12,"systolic_bp":100,"diastolic_bp":50,"bs":6.4,"heart_rate":70,"risk_level":"mid risk"},{"age":15,"systolic_bp":100,"diastolic_bp":60,"bs":6,"heart_rate":80,"risk_level":"low risk"},{"age":35,"systolic_bp":140,"diastolic_bp":90,"bs":13,"heart_rate":70,"risk_level":"high risk"},{"age":29,"systolic_bp":90,"diastolic_bp":70,"bs":8,"heart_rate":80,"risk_level":"high risk"},{"age":30,"systolic_bp":140,"diastolic_bp":85,"bs":7,"heart_rate":70,"risk_level":"high risk"},{"age":23,"systolic_bp":140,"diastolic_bp":80,"bs":7.01,"heart_rate":70,"risk_level":"high risk"},{"age":35,"systolic_bp":85,"diastolic_bp":60,"bs":11,"heart_rate":86,"risk_level":"high risk"},{"age":42,"systolic_bp":130,"diastolic_bp":80,"bs":18,"heart_rate":70,"risk_level":"high risk"},{"age":50,"systolic_bp":140,"diastolic_bp":90,"bs":15,"heart_rate":90,"risk_level":"high risk"},{"age":25,"systolic_bp":140,"diastolic_bp":100,"bs":7.01,"heart_rate":80,"risk_level":"high risk"},{"age":40,"systolic_bp":140,"diastolic_bp":100,"bs":18,"heart_rate":90,"risk_level":"high risk"},{"age":32,"systolic_bp":140,"diastolic_bp":100,"bs":6.9,"heart_rate":78,"risk_level":"high risk"},{"age":14,"systolic_bp":90,"diastolic_bp":65,"bs":7,"heart_rate":70,"risk_level":"high risk"},{"age":37,"systolic_bp":120,"diastolic_bp":90,"bs":11,"heart_rate":88,"risk_level":"high risk"},{"age":17,"systolic_bp":110,"diastolic_bp":75,"bs":12,"heart_rate":76,"risk_level":"high risk"},{"age":40,"systolic_bp":120,"diastolic_bp":90,"bs":12,"heart_rate":80,"risk_level":"high risk"},{"age":40,"systolic_bp":160,"diastolic_bp":100,"bs":19,"heart_rate":77,"risk_level":"high risk"},{"age":20,"systolic_bp":120,"diastolic_bp":76,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":15,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":24,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":66,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":60,"bs":7,"heart_rate":70,"risk_level":"low risk"},{"age":31,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"low risk"},{"age":23,"systolic_bp":120,"diastolic_bp":85,"bs":8,"heart_rate":70,"risk_level":"low risk"},{"age":23,"systolic_bp":90,"diastolic_bp":60,"bs":6.7,"heart_rate":76,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"low risk"},{"age":15,"systolic_bp":76,"diastolic_bp":68,"bs":7,"heart_rate":77,"risk_level":"low risk"},{"age":34,"systolic_bp":120,"diastolic_bp":75,"bs":8,"heart_rate":70,"risk_level":"low risk"},{"age":15,"systolic_bp":120,"diastolic_bp":80,"bs":6.6,"heart_rate":70,"risk_level":"low risk"},{"age":15,"systolic_bp":90,"diastolic_bp":60,"bs":6,"heart_rate":80,"risk_level":"low risk"},{"age":21,"systolic_bp":90,"diastolic_bp":50,"bs":6.9,"heart_rate":60,"risk_level":"low risk"},{"age":15,"systolic_bp":100,"diastolic_bp":49,"bs":7.6,"heart_rate":77,"risk_level":"low risk"},{"age":12,"systolic_bp":100,"diastolic_bp":50,"bs":6,"heart_rate":70,"risk_level":"mid risk"},{"age":21,"systolic_bp":100,"diastolic_bp":50,"bs":6.8,"heart_rate":60,"risk_level":"low risk"},{"age":23,"systolic_bp":130,"diastolic_bp":70,"bs":7.01,"heart_rate":78,"risk_level":"mid risk"},{"age":32,"systolic_bp":120,"diastolic_bp":90,"bs":6.9,"heart_rate":70,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":20,"systolic_bp":120,"diastolic_bp":75,"bs":7.01,"heart_rate":70,"risk_level":"mid risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"mid risk"},{"age":30,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":18,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":17,"systolic_bp":90,"diastolic_bp":60,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":17,"systolic_bp":90,"diastolic_bp":63,"bs":6.9,"heart_rate":70,"risk_level":"mid risk"},{"age":25,"systolic_bp":120,"diastolic_bp":90,"bs":6.7,"heart_rate":80,"risk_level":"mid risk"},{"age":17,"systolic_bp":120,"diastolic_bp":80,"bs":6.7,"heart_rate":76,"risk_level":"mid risk"},{"age":13,"systolic_bp":90,"diastolic_bp":65,"bs":7.9,"heart_rate":80,"risk_level":"mid risk"},{"age":31,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"mid risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":6.1,"heart_rate":78,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":28,"systolic_bp":85,"diastolic_bp":60,"bs":9,"heart_rate":86,"risk_level":"mid risk"},{"age":50,"systolic_bp":140,"diastolic_bp":80,"bs":6.7,"heart_rate":70,"risk_level":"mid risk"},{"age":29,"systolic_bp":90,"diastolic_bp":70,"bs":6.7,"heart_rate":80,"risk_level":"mid risk"},{"age":31,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"mid risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":6.7,"heart_rate":78,"risk_level":"mid risk"},{"age":17,"systolic_bp":85,"diastolic_bp":60,"bs":9,"heart_rate":86,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":20,"systolic_bp":110,"diastolic_bp":60,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":20,"systolic_bp":120,"diastolic_bp":75,"bs":7.01,"heart_rate":70,"risk_level":"mid risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"mid risk"},{"age":30,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":18,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":17,"systolic_bp":90,"diastolic_bp":60,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":17,"systolic_bp":90,"diastolic_bp":63,"bs":6.9,"heart_rate":70,"risk_level":"mid risk"},{"age":25,"systolic_bp":120,"diastolic_bp":90,"bs":6.7,"heart_rate":80,"risk_level":"mid risk"},{"age":17,"systolic_bp":120,"diastolic_bp":80,"bs":6.7,"heart_rate":76,"risk_level":"mid risk"},{"age":13,"systolic_bp":90,"diastolic_bp":65,"bs":7.9,"heart_rate":80,"risk_level":"mid risk"},{"age":31,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"mid risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":6.1,"heart_rate":78,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":28,"systolic_bp":85,"diastolic_bp":60,"bs":9,"heart_rate":86,"risk_level":"mid risk"},{"age":50,"systolic_bp":140,"diastolic_bp":80,"bs":6.7,"heart_rate":70,"risk_level":"mid risk"},{"age":29,"systolic_bp":90,"diastolic_bp":70,"bs":6.7,"heart_rate":80,"risk_level":"mid risk"},{"age":31,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"mid risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":6.7,"heart_rate":78,"risk_level":"mid risk"},{"age":17,"systolic_bp":85,"diastolic_bp":60,"bs":9,"heart_rate":86,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":20,"systolic_bp":110,"diastolic_bp":60,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":32,"systolic_bp":120,"diastolic_bp":65,"bs":6,"heart_rate":76,"risk_level":"mid risk"},{"age":26,"systolic_bp":85,"diastolic_bp":60,"bs":6,"heart_rate":86,"risk_level":"mid risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":7.7,"heart_rate":78,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":54,"systolic_bp":130,"diastolic_bp":70,"bs":12,"heart_rate":67,"risk_level":"mid risk"},{"age":44,"systolic_bp":120,"diastolic_bp":90,"bs":16,"heart_rate":80,"risk_level":"mid risk"},{"age":23,"systolic_bp":130,"diastolic_bp":70,"bs":6.9,"heart_rate":70,"risk_level":"mid risk"},{"age":22,"systolic_bp":85,"diastolic_bp":60,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":55,"systolic_bp":120,"diastolic_bp":90,"bs":12,"heart_rate":70,"risk_level":"mid risk"},{"age":35,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":78,"risk_level":"mid risk"},{"age":21,"systolic_bp":90,"diastolic_bp":60,"bs":6.9,"heart_rate":86,"risk_level":"mid risk"},{"age":16,"systolic_bp":90,"diastolic_bp":65,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":33,"systolic_bp":115,"diastolic_bp":65,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":12,"systolic_bp":95,"diastolic_bp":60,"bs":6.9,"heart_rate":65,"risk_level":"mid risk"},{"age":28,"systolic_bp":120,"diastolic_bp":90,"bs":6.9,"heart_rate":70,"risk_level":"mid risk"},{"age":21,"systolic_bp":90,"diastolic_bp":65,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":18,"systolic_bp":90,"diastolic_bp":60,"bs":6.9,"heart_rate":70,"risk_level":"mid risk"},{"age":21,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":16,"systolic_bp":100,"diastolic_bp":70,"bs":6.9,"heart_rate":80,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":75,"bs":6.9,"heart_rate":66,"risk_level":"mid risk"},{"age":23,"systolic_bp":100,"diastolic_bp":85,"bs":6.9,"heart_rate":66,"risk_level":"mid risk"},{"age":22,"systolic_bp":120,"diastolic_bp":90,"bs":7.8,"heart_rate":82,"risk_level":"mid risk"},{"age":60,"systolic_bp":120,"diastolic_bp":85,"bs":15,"heart_rate":60,"risk_level":"mid risk"},{"age":13,"systolic_bp":90,"diastolic_bp":65,"bs":7.8,"heart_rate":80,"risk_level":"mid risk"},{"age":23,"systolic_bp":120,"diastolic_bp":90,"bs":7.8,"heart_rate":60,"risk_level":"mid risk"},{"age":28,"systolic_bp":115,"diastolic_bp":60,"bs":7.8,"heart_rate":86,"risk_level":"mid risk"},{"age":50,"systolic_bp":120,"diastolic_bp":80,"bs":7.8,"heart_rate":70,"risk_level":"mid risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":7.8,"heart_rate":78,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":85,"bs":7.8,"heart_rate":60,"risk_level":"mid risk"},{"age":60,"systolic_bp":90,"diastolic_bp":65,"bs":6.8,"heart_rate":77,"risk_level":"mid risk"},{"age":55,"systolic_bp":120,"diastolic_bp":90,"bs":6.8,"heart_rate":66,"risk_level":"mid risk"},{"age":25,"systolic_bp":120,"diastolic_bp":80,"bs":6.8,"heart_rate":66,"risk_level":"mid risk"},{"age":12,"systolic_bp":120,"diastolic_bp":95,"bs":6.8,"heart_rate":60,"risk_level":"mid risk"},{"age":35,"systolic_bp":100,"diastolic_bp":70,"bs":6.8,"heart_rate":60,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":90,"bs":6.8,"heart_rate":60,"risk_level":"mid risk"},{"age":60,"systolic_bp":90,"diastolic_bp":65,"bs":6.8,"heart_rate":77,"risk_level":"mid risk"},{"age":50,"systolic_bp":130,"diastolic_bp":80,"bs":16,"heart_rate":76,"risk_level":"mid risk"},{"age":27,"systolic_bp":120,"diastolic_bp":90,"bs":6.8,"heart_rate":68,"risk_level":"mid risk"},{"age":55,"systolic_bp":100,"diastolic_bp":70,"bs":6.8,"heart_rate":80,"risk_level":"mid risk"},{"age":12,"systolic_bp":120,"diastolic_bp":90,"bs":6.8,"heart_rate":80,"risk_level":"mid risk"},{"age":60,"systolic_bp":120,"diastolic_bp":80,"bs":6.8,"heart_rate":77,"risk_level":"mid risk"},{"age":25,"systolic_bp":120,"diastolic_bp":100,"bs":6.8,"heart_rate":60,"risk_level":"mid risk"},{"age":22,"systolic_bp":90,"diastolic_bp":60,"bs":6.8,"heart_rate":77,"risk_level":"mid risk"},{"age":30,"systolic_bp":120,"diastolic_bp":80,"bs":6.8,"heart_rate":70,"risk_level":"mid risk"},{"age":35,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"mid risk"},{"age":23,"systolic_bp":130,"diastolic_bp":70,"bs":6.8,"heart_rate":78,"risk_level":"mid risk"},{"age":43,"systolic_bp":130,"diastolic_bp":80,"bs":18,"heart_rate":70,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":30,"systolic_bp":120,"diastolic_bp":75,"bs":6.8,"heart_rate":70,"risk_level":"mid risk"},{"age":32,"systolic_bp":120,"diastolic_bp":80,"bs":6.8,"heart_rate":70,"risk_level":"mid risk"},{"age":23,"systolic_bp":130,"diastolic_bp":70,"bs":6.8,"heart_rate":78,"risk_level":"mid risk"},{"age":42,"systolic_bp":130,"diastolic_bp":80,"bs":18,"heart_rate":70,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":31,"systolic_bp":110,"diastolic_bp":90,"bs":6.8,"heart_rate":70,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":25,"systolic_bp":120,"diastolic_bp":80,"bs":7.9,"heart_rate":66,"risk_level":"mid risk"},{"age":31,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"mid risk"},{"age":23,"systolic_bp":120,"diastolic_bp":90,"bs":7.9,"heart_rate":70,"risk_level":"mid risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":7.9,"heart_rate":78,"risk_level":"mid risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"mid risk"},{"age":18,"systolic_bp":120,"diastolic_bp":80,"bs":7.9,"heart_rate":76,"risk_level":"mid risk"},{"age":18,"systolic_bp":85,"diastolic_bp":60,"bs":7.5,"heart_rate":86,"risk_level":"mid risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":7.5,"heart_rate":78,"risk_level":"mid risk"},{"age":23,"systolic_bp":120,"diastolic_bp":75,"bs":8,"heart_rate":70,"risk_level":"mid risk"},{"age":15,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":70,"risk_level":"mid risk"},{"age":30,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":76,"risk_level":"mid risk"},{"age":40,"systolic_bp":120,"diastolic_bp":95,"bs":11,"heart_rate":80,"risk_level":"mid risk"},{"age":60,"systolic_bp":120,"diastolic_bp":85,"bs":15,"heart_rate":60,"risk_level":"mid risk"},{"age":50,"systolic_bp":130,"diastolic_bp":100,"bs":16,"heart_rate":75,"risk_level":"mid risk"},{"age":28,"systolic_bp":115,"diastolic_bp":60,"bs":7.5,"heart_rate":86,"risk_level":"mid risk"},{"age":31,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"mid risk"},{"age":23,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":70,"risk_level":"mid risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":7.5,"heart_rate":78,"risk_level":"mid risk"},{"age":22,"systolic_bp":100,"diastolic_bp":65,"bs":7.5,"heart_rate":70,"risk_level":"mid risk"},{"age":49,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":77,"risk_level":"mid risk"},{"age":28,"systolic_bp":90,"diastolic_bp":60,"bs":7.5,"heart_rate":82,"risk_level":"mid risk"},{"age":12,"systolic_bp":90,"diastolic_bp":60,"bs":7.5,"heart_rate":66,"risk_level":"mid risk"},{"age":20,"systolic_bp":100,"diastolic_bp":90,"bs":7.5,"heart_rate":88,"risk_level":"mid risk"},{"age":23,"systolic_bp":100,"diastolic_bp":85,"bs":7.5,"heart_rate":66,"risk_level":"mid risk"},{"age":22,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":82,"risk_level":"mid risk"},{"age":21,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":77,"risk_level":"mid risk"},{"age":60,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":75,"risk_level":"mid risk"},{"age":50,"systolic_bp":130,"diastolic_bp":100,"bs":16,"heart_rate":75,"risk_level":"mid risk"},{"age":17,"systolic_bp":90,"diastolic_bp":65,"bs":7.5,"heart_rate":67,"risk_level":"mid risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":7.5,"heart_rate":78,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":85,"bs":9,"heart_rate":60,"risk_level":"mid risk"},{"age":30,"systolic_bp":90,"diastolic_bp":65,"bs":8,"heart_rate":77,"risk_level":"mid risk"},{"age":28,"systolic_bp":85,"diastolic_bp":60,"bs":9,"heart_rate":86,"risk_level":"mid risk"},{"age":50,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":39,"systolic_bp":110,"diastolic_bp":70,"bs":7.9,"heart_rate":80,"risk_level":"mid risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":8,"heart_rate":78,"risk_level":"mid risk"},{"age":17,"systolic_bp":90,"diastolic_bp":60,"bs":9,"heart_rate":86,"risk_level":"mid risk"},{"age":32,"systolic_bp":120,"diastolic_bp":90,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":42,"systolic_bp":120,"diastolic_bp":90,"bs":9,"heart_rate":70,"risk_level":"mid risk"},{"age":36,"systolic_bp":120,"diastolic_bp":90,"bs":7,"heart_rate":82,"risk_level":"mid risk"},{"age":30,"systolic_bp":120,"diastolic_bp":80,"bs":9,"heart_rate":76,"risk_level":"mid risk"},{"age":15,"systolic_bp":70,"diastolic_bp":50,"bs":6,"heart_rate":70,"risk_level":"mid risk"},{"age":10,"systolic_bp":100,"diastolic_bp":50,"bs":6,"heart_rate":70,"risk_level":"mid risk"},{"age":12,"systolic_bp":100,"diastolic_bp":50,"bs":6.4,"heart_rate":70,"risk_level":"mid risk"},{"age":12,"systolic_bp":100,"diastolic_bp":50,"bs":6,"heart_rate":70,"risk_level":"mid risk"},{"age":23,"systolic_bp":130,"diastolic_bp":70,"bs":7.01,"heart_rate":78,"risk_level":"mid risk"},{"age":32,"systolic_bp":120,"diastolic_bp":90,"bs":6.9,"heart_rate":70,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":20,"systolic_bp":120,"diastolic_bp":75,"bs":7.01,"heart_rate":70,"risk_level":"mid risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"mid risk"},{"age":30,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":18,"systolic_bp":120,"diastolic_bp":80,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":17,"systolic_bp":90,"diastolic_bp":60,"bs":6.9,"heart_rate":76,"risk_level":"mid risk"},{"age":17,"systolic_bp":90,"diastolic_bp":63,"bs":6.9,"heart_rate":70,"risk_level":"mid risk"},{"age":25,"systolic_bp":120,"diastolic_bp":90,"bs":6.7,"heart_rate":80,"risk_level":"mid risk"},{"age":17,"systolic_bp":120,"diastolic_bp":80,"bs":6.7,"heart_rate":76,"risk_level":"mid risk"},{"age":13,"systolic_bp":90,"diastolic_bp":65,"bs":7.9,"heart_rate":80,"risk_level":"mid risk"},{"age":31,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"mid risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":6.1,"heart_rate":78,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":28,"systolic_bp":85,"diastolic_bp":60,"bs":9,"heart_rate":86,"risk_level":"mid risk"},{"age":50,"systolic_bp":140,"diastolic_bp":80,"bs":6.7,"heart_rate":70,"risk_level":"mid risk"},{"age":29,"systolic_bp":90,"diastolic_bp":70,"bs":6.7,"heart_rate":80,"risk_level":"mid risk"},{"age":31,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"mid risk"},{"age":29,"systolic_bp":130,"diastolic_bp":70,"bs":6.7,"heart_rate":78,"risk_level":"mid risk"},{"age":17,"systolic_bp":85,"diastolic_bp":60,"bs":9,"heart_rate":86,"risk_level":"mid risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":20,"systolic_bp":110,"diastolic_bp":60,"bs":7,"heart_rate":70,"risk_level":"mid risk"},{"age":32,"systolic_bp":120,"diastolic_bp":65,"bs":6,"heart_rate":76,"risk_level":"mid risk"},{"age":27,"systolic_bp":120,"diastolic_bp":70,"bs":6.8,"heart_rate":77,"risk_level":"low risk"},{"age":27,"systolic_bp":120,"diastolic_bp":70,"bs":6.8,"heart_rate":77,"risk_level":"low risk"},{"age":32,"systolic_bp":120,"diastolic_bp":90,"bs":6.8,"heart_rate":70,"risk_level":"low risk"},{"age":23,"systolic_bp":99,"diastolic_bp":60,"bs":6.8,"heart_rate":76,"risk_level":"low risk"},{"age":15,"systolic_bp":76,"diastolic_bp":49,"bs":6.8,"heart_rate":77,"risk_level":"low risk"},{"age":15,"systolic_bp":120,"diastolic_bp":80,"bs":6.8,"heart_rate":70,"risk_level":"low risk"},{"age":29,"systolic_bp":100,"diastolic_bp":70,"bs":6.8,"heart_rate":80,"risk_level":"low risk"},{"age":35,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"low risk"},{"age":32,"systolic_bp":120,"diastolic_bp":90,"bs":6.8,"heart_rate":70,"risk_level":"low risk"},{"age":23,"systolic_bp":90,"diastolic_bp":60,"bs":6.8,"heart_rate":76,"risk_level":"low risk"},{"age":15,"systolic_bp":76,"diastolic_bp":49,"bs":6.8,"heart_rate":77,"risk_level":"low risk"},{"age":20,"systolic_bp":120,"diastolic_bp":75,"bs":6.8,"heart_rate":70,"risk_level":"low risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"low risk"},{"age":15,"systolic_bp":120,"diastolic_bp":80,"bs":6.8,"heart_rate":70,"risk_level":"low risk"},{"age":30,"systolic_bp":120,"diastolic_bp":80,"bs":6.8,"heart_rate":76,"risk_level":"low risk"},{"age":18,"systolic_bp":120,"diastolic_bp":80,"bs":6.8,"heart_rate":76,"risk_level":"low risk"},{"age":17,"systolic_bp":90,"diastolic_bp":60,"bs":7.9,"heart_rate":76,"risk_level":"low risk"},{"age":15,"systolic_bp":76,"diastolic_bp":49,"bs":7.9,"heart_rate":77,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":75,"bs":7.9,"heart_rate":70,"risk_level":"low risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"low risk"},{"age":15,"systolic_bp":120,"diastolic_bp":80,"bs":7.9,"heart_rate":70,"risk_level":"low risk"},{"age":22,"systolic_bp":100,"diastolic_bp":65,"bs":7.9,"heart_rate":80,"risk_level":"low risk"},{"age":35,"systolic_bp":100,"diastolic_bp":70,"bs":7.9,"heart_rate":60,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":85,"bs":7.9,"heart_rate":60,"risk_level":"low risk"},{"age":60,"systolic_bp":90,"diastolic_bp":65,"bs":7.9,"heart_rate":77,"risk_level":"low risk"},{"age":50,"systolic_bp":120,"diastolic_bp":80,"bs":7.9,"heart_rate":70,"risk_level":"low risk"},{"age":17,"systolic_bp":85,"diastolic_bp":60,"bs":7.9,"heart_rate":86,"risk_level":"low risk"},{"age":32,"systolic_bp":120,"diastolic_bp":90,"bs":7.9,"heart_rate":70,"risk_level":"low risk"},{"age":42,"systolic_bp":120,"diastolic_bp":80,"bs":7.9,"heart_rate":70,"risk_level":"low risk"},{"age":23,"systolic_bp":90,"diastolic_bp":60,"bs":7.9,"heart_rate":76,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"low risk"},{"age":15,"systolic_bp":76,"diastolic_bp":49,"bs":7.9,"heart_rate":77,"risk_level":"low risk"},{"age":16,"systolic_bp":120,"diastolic_bp":75,"bs":7.9,"heart_rate":7,"risk_level":"low risk"},{"age":15,"systolic_bp":120,"diastolic_bp":80,"bs":7.9,"heart_rate":70,"risk_level":"low risk"},{"age":17,"systolic_bp":70,"diastolic_bp":50,"bs":7.9,"heart_rate":70,"risk_level":"low risk"},{"age":17,"systolic_bp":90,"diastolic_bp":60,"bs":7.5,"heart_rate":76,"risk_level":"low risk"},{"age":17,"systolic_bp":90,"diastolic_bp":63,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":25,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":80,"risk_level":"low risk"},{"age":17,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":76,"risk_level":"low risk"},{"age":19,"systolic_bp":90,"diastolic_bp":65,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":15,"systolic_bp":80,"diastolic_bp":60,"bs":7.5,"heart_rate":80,"risk_level":"low risk"},{"age":60,"systolic_bp":90,"diastolic_bp":65,"bs":7.5,"heart_rate":77,"risk_level":"low risk"},{"age":50,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":19,"systolic_bp":90,"diastolic_bp":70,"bs":7.5,"heart_rate":80,"risk_level":"low risk"},{"age":31,"systolic_bp":120,"diastolic_bp":60,"bs":6.1,"heart_rate":76,"risk_level":"low risk"},{"age":23,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":17,"systolic_bp":85,"diastolic_bp":60,"bs":7.5,"heart_rate":86,"risk_level":"low risk"},{"age":32,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":42,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":42,"systolic_bp":90,"diastolic_bp":60,"bs":7.5,"heart_rate":76,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":70,"risk_level":"low risk"},{"age":15,"systolic_bp":78,"diastolic_bp":49,"bs":7.5,"heart_rate":77,"risk_level":"low risk"},{"age":16,"systolic_bp":70,"diastolic_bp":50,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":16,"systolic_bp":100,"diastolic_bp":70,"bs":7.5,"heart_rate":80,"risk_level":"low risk"},{"age":19,"systolic_bp":120,"diastolic_bp":75,"bs":7.5,"heart_rate":66,"risk_level":"low risk"},{"age":22,"systolic_bp":100,"diastolic_bp":65,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":49,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":77,"risk_level":"low risk"},{"age":28,"systolic_bp":90,"diastolic_bp":60,"bs":7.5,"heart_rate":82,"risk_level":"low risk"},{"age":12,"systolic_bp":90,"diastolic_bp":60,"bs":7.5,"heart_rate":66,"risk_level":"low risk"},{"age":20,"systolic_bp":100,"diastolic_bp":90,"bs":7.5,"heart_rate":88,"risk_level":"low risk"},{"age":23,"systolic_bp":100,"diastolic_bp":85,"bs":7.5,"heart_rate":66,"risk_level":"low risk"},{"age":22,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":82,"risk_level":"low risk"},{"age":21,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":77,"risk_level":"low risk"},{"age":21,"systolic_bp":75,"diastolic_bp":50,"bs":7.5,"heart_rate":60,"risk_level":"low risk"},{"age":12,"systolic_bp":90,"diastolic_bp":60,"bs":7.5,"heart_rate":60,"risk_level":"low risk"},{"age":60,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":75,"risk_level":"low risk"},{"age":55,"systolic_bp":100,"diastolic_bp":65,"bs":7.5,"heart_rate":66,"risk_level":"low risk"},{"age":45,"systolic_bp":120,"diastolic_bp":95,"bs":7.5,"heart_rate":66,"risk_level":"low risk"},{"age":35,"systolic_bp":100,"diastolic_bp":70,"bs":7.5,"heart_rate":66,"risk_level":"low risk"},{"age":22,"systolic_bp":120,"diastolic_bp":85,"bs":7.5,"heart_rate":88,"risk_level":"low risk"},{"age":13,"systolic_bp":90,"diastolic_bp":65,"bs":7.5,"heart_rate":80,"risk_level":"low risk"},{"age":23,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":60,"risk_level":"low risk"},{"age":17,"systolic_bp":90,"diastolic_bp":65,"bs":7.5,"heart_rate":67,"risk_level":"low risk"},{"age":59,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":23,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":17,"systolic_bp":85,"diastolic_bp":60,"bs":7.5,"heart_rate":86,"risk_level":"low risk"},{"age":32,"systolic_bp":120,"diastolic_bp":90,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":42,"systolic_bp":120,"diastolic_bp":80,"bs":7.5,"heart_rate":70,"risk_level":"low risk"},{"age":25,"systolic_bp":140,"diastolic_bp":100,"bs":7.01,"heart_rate":80,"risk_level":"high risk"},{"age":40,"systolic_bp":140,"diastolic_bp":100,"bs":18,"heart_rate":90,"risk_level":"high risk"},{"age":32,"systolic_bp":140,"diastolic_bp":100,"bs":6.9,"heart_rate":78,"risk_level":"high risk"},{"age":14,"systolic_bp":90,"diastolic_bp":65,"bs":7,"heart_rate":70,"risk_level":"high risk"},{"age":37,"systolic_bp":120,"diastolic_bp":90,"bs":11,"heart_rate":88,"risk_level":"high risk"},{"age":17,"systolic_bp":110,"diastolic_bp":75,"bs":12,"heart_rate":76,"risk_level":"high risk"},{"age":40,"systolic_bp":120,"diastolic_bp":90,"bs":12,"heart_rate":80,"risk_level":"high risk"},{"age":40,"systolic_bp":160,"diastolic_bp":100,"bs":19,"heart_rate":77,"risk_level":"high risk"},{"age":32,"systolic_bp":140,"diastolic_bp":90,"bs":18,"heart_rate":88,"risk_level":"high risk"},{"age":12,"systolic_bp":90,"diastolic_bp":60,"bs":7.9,"heart_rate":66,"risk_level":"high risk"},{"age":35,"systolic_bp":140,"diastolic_bp":100,"bs":8,"heart_rate":66,"risk_level":"high risk"},{"age":54,"systolic_bp":140,"diastolic_bp":100,"bs":15,"heart_rate":66,"risk_level":"high risk"},{"age":40,"systolic_bp":120,"diastolic_bp":95,"bs":11,"heart_rate":80,"risk_level":"high risk"},{"age":60,"systolic_bp":120,"diastolic_bp":85,"bs":15,"heart_rate":60,"risk_level":"high risk"},{"age":55,"systolic_bp":140,"diastolic_bp":95,"bs":19,"heart_rate":77,"risk_level":"high risk"},{"age":50,"systolic_bp":130,"diastolic_bp":100,"bs":16,"heart_rate":75,"risk_level":"high risk"},{"age":17,"systolic_bp":90,"diastolic_bp":65,"bs":6.1,"heart_rate":67,"risk_level":"high risk"},{"age":28,"systolic_bp":83,"diastolic_bp":60,"bs":8,"heart_rate":86,"risk_level":"high risk"},{"age":50,"systolic_bp":120,"diastolic_bp":80,"bs":15,"heart_rate":70,"risk_level":"high risk"},{"age":17,"systolic_bp":85,"diastolic_bp":60,"bs":9,"heart_rate":86,"risk_level":"high risk"},{"age":33,"systolic_bp":120,"diastolic_bp":75,"bs":10,"heart_rate":70,"risk_level":"high risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"high risk"},{"age":50,"systolic_bp":140,"diastolic_bp":95,"bs":17,"heart_rate":60,"risk_level":"high risk"},{"age":30,"systolic_bp":140,"diastolic_bp":100,"bs":15,"heart_rate":70,"risk_level":"high risk"},{"age":29,"systolic_bp":120,"diastolic_bp":75,"bs":7.2,"heart_rate":70,"risk_level":"high risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"high risk"},{"age":50,"systolic_bp":140,"diastolic_bp":90,"bs":15,"heart_rate":77,"risk_level":"high risk"},{"age":25,"systolic_bp":140,"diastolic_bp":100,"bs":7.2,"heart_rate":80,"risk_level":"high risk"},{"age":55,"systolic_bp":140,"diastolic_bp":80,"bs":7.2,"heart_rate":76,"risk_level":"high risk"},{"age":40,"systolic_bp":140,"diastolic_bp":100,"bs":18,"heart_rate":77,"risk_level":"high risk"},{"age":28,"systolic_bp":120,"diastolic_bp":80,"bs":9,"heart_rate":76,"risk_level":"high risk"},{"age":32,"systolic_bp":140,"diastolic_bp":100,"bs":8,"heart_rate":70,"risk_level":"high risk"},{"age":17,"systolic_bp":90,"diastolic_bp":60,"bs":11,"heart_rate":78,"risk_level":"high risk"},{"age":17,"systolic_bp":90,"diastolic_bp":63,"bs":8,"heart_rate":70,"risk_level":"high risk"},{"age":25,"systolic_bp":120,"diastolic_bp":90,"bs":12,"heart_rate":80,"risk_level":"high risk"},{"age":17,"systolic_bp":120,"diastolic_bp":80,"bs":7,"heart_rate":76,"risk_level":"high risk"},{"age":19,"systolic_bp":90,"diastolic_bp":65,"bs":11,"heart_rate":70,"risk_level":"high risk"},{"age":37,"systolic_bp":120,"diastolic_bp":90,"bs":11,"heart_rate":88,"risk_level":"high risk"},{"age":17,"systolic_bp":110,"diastolic_bp":75,"bs":13,"heart_rate":76,"risk_level":"high risk"},{"age":25,"systolic_bp":120,"diastolic_bp":90,"bs":15,"heart_rate":80,"risk_level":"high risk"},{"age":40,"systolic_bp":160,"diastolic_bp":100,"bs":19,"heart_rate":77,"risk_level":"high risk"},{"age":32,"systolic_bp":140,"diastolic_bp":90,"bs":18,"heart_rate":88,"risk_level":"high risk"},{"age":12,"systolic_bp":90,"diastolic_bp":60,"bs":8,"heart_rate":66,"risk_level":"high risk"},{"age":35,"systolic_bp":140,"diastolic_bp":100,"bs":9,"heart_rate":66,"risk_level":"high risk"},{"age":54,"systolic_bp":140,"diastolic_bp":100,"bs":15,"heart_rate":66,"risk_level":"high risk"},{"age":40,"systolic_bp":120,"diastolic_bp":95,"bs":11,"heart_rate":80,"risk_level":"high risk"},{"age":12,"systolic_bp":90,"diastolic_bp":60,"bs":11,"heart_rate":60,"risk_level":"high risk"},{"age":60,"systolic_bp":120,"diastolic_bp":85,"bs":15,"heart_rate":60,"risk_level":"high risk"},{"age":55,"systolic_bp":140,"diastolic_bp":95,"bs":19,"heart_rate":77,"risk_level":"high risk"},{"age":50,"systolic_bp":130,"diastolic_bp":100,"bs":16,"heart_rate":76,"risk_level":"high risk"},{"age":13,"systolic_bp":90,"diastolic_bp":65,"bs":9,"heart_rate":80,"risk_level":"high risk"},{"age":17,"systolic_bp":90,"diastolic_bp":65,"bs":7.7,"heart_rate":67,"risk_level":"high risk"},{"age":17,"systolic_bp":85,"diastolic_bp":60,"bs":6.3,"heart_rate":86,"risk_level":"high risk"},{"age":40,"systolic_bp":120,"diastolic_bp":75,"bs":7.7,"heart_rate":70,"risk_level":"high risk"},{"age":48,"systolic_bp":120,"diastolic_bp":80,"bs":11,"heart_rate":88,"risk_level":"high risk"},{"age":22,"systolic_bp":120,"diastolic_bp":60,"bs":15,"heart_rate":80,"risk_level":"high risk"},{"age":55,"systolic_bp":120,"diastolic_bp":90,"bs":18,"heart_rate":60,"risk_level":"high risk"},{"age":35,"systolic_bp":85,"diastolic_bp":60,"bs":19,"heart_rate":86,"risk_level":"high risk"},{"age":43,"systolic_bp":120,"diastolic_bp":90,"bs":18,"heart_rate":70,"risk_level":"high risk"},{"age":32,"systolic_bp":120,"diastolic_bp":65,"bs":6,"heart_rate":76,"risk_level":"mid risk"}];
+const COHORT_STATS = {"age__mean":29.8718,"age__sd":13.4744,"systolic_bp__mean":113.1982,"systolic_bp__sd":18.4039,"diastolic_bp__mean":76.4606,"diastolic_bp__sd":13.8858,"bs__mean":8.726,"bs__sd":3.2935,"heart_rate__mean":74.3018,"heart_rate__sd":8.0887};
+</script>
+<div id="risk-explorer-app">
+<div class="info-card">
+<div class="field-grid">
+<div>
+<p><label for="in-age">Age (years)</label>
+<input type="number" id="in-age" value="28" min="10" max="70"></p>
+</div>
+<div>
+<p><label for="in-sbp">Systolic BP (mmHg)</label>
+<input type="number" id="in-sbp" value="120" min="60" max="200"></p>
+</div>
+<div>
+<label for="in-dbp">Diastolic BP (mmHg)</label>
+<input type="number" id="in-dbp" value="80" min="40" max="120">
+<div class="hint">
+The lower blood pressure number.
+</div>
+</div>
+<div>
+<label for="in-bs">Blood glucose (mmol/L)</label>
+<input type="number" id="in-bs" value="7.5" min="4" max="25" step="0.1">
+<div class="hint">
+Fasting or random blood sugar reading.
+</div>
+</div>
+<div>
+<p><label for="in-hr">Resting heart rate (bpm)</label>
+<input type="number" id="in-hr" value="75" min="40" max="140"></p>
+</div>
+</div>
+<button class="btn-teal" id="btn-compare" style="border:none;cursor:pointer;">
+Compare to cohort
+</button>
+<div id="result-panel" class="result-panel">
+<div class="result-head">
+<p><span>Nearest-neighbor read:</span> <span id="result-badge"
+class="badge-risk"></span> <span id="result-votes"
+style="color:#8b94a3;font-size:0.85rem;"></span></p>
+</div>
+<div id="clinical-note">
+
+</div>
+<div id="profile-chart-wrap" style="margin-top:0.9rem;display:none;">
+<div id="profile-chart">
+
+</div>
+</div>
+<div id="profile-chart-caption" class="chart-caption"
+style="display:none;">
+Each bar is your percentile within the cohort for that vital (0-100).
+The dashed line marks the cohort median – the healthy baseline this
+dataset is centered on.
+</div>
+<div id="result-explain" class="explain-box">
+
+</div>
+</div>
+</div>
+</div>
+<div class="disclaimer">
+<p>This tool is descriptive, not diagnostic. The cohort comparison above
+tells you which historical records in this dataset your entered vitals
+most resemble; the blood-pressure category is drawn from published
+clinical guideline thresholds, not a diagnosis. Neither is a medical
+assessment, and neither was built or validated for clinical use. If you
+have concerns about a pregnancy, talk to a clinician.</p>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var K = 15;
+  var VARS = ["age", "systolic_bp", "diastolic_bp", "bs", "heart_rate"];
+  var LABELS = {
+    age: "Age", systolic_bp: "Systolic BP", diastolic_bp: "Diastolic BP",
+    bs: "Blood glucose", heart_rate: "Heart rate"
+  };
+
+  function standardize(varName, value) {
+    var mean = COHORT_STATS[varName + "__mean"];
+    var sd = COHORT_STATS[varName + "__sd"];
+    return (value - mean) / sd;
+  }
+
+  function nearestNeighbors(input) {
+    var distances = COHORT.map(function (row) {
+      var sumSq = 0;
+      VARS.forEach(function (v) {
+        var dz = standardize(v, input[v]) - standardize(v, row[v]);
+        sumSq += dz * dz;
+      });
+      return { row: row, dist: Math.sqrt(sumSq) };
+    });
+    distances.sort(function (a, b) { return a.dist - b.dist; });
+    return distances.slice(0, K);
+  }
+
+  function majorityRisk(neighbors) {
+    var counts = { "low risk": 0, "mid risk": 0, "high risk": 0 };
+    neighbors.forEach(function (n) { counts[n.row.risk_level]++; });
+    var winner = "low risk";
+    Object.keys(counts).forEach(function (k) {
+      if (counts[k] > counts[winner]) winner = k;
+    });
+    return { winner: winner, counts: counts };
+  }
+
+  function classifyBP(sbp, dbp) {
+    var reading = sbp + "/" + dbp + " mmHg";
+    if (sbp >= 160 || dbp >= 110) {
+      return {
+        cls: "bp-severe",
+        label: "Severe range (AHA 2022 guideline context)",
+        text: "A reading of " + reading + " is at or above 160/110 mmHg, the threshold at which the AHA 2022 scientific statement on hypertension in pregnancy calls for antihypertensive treatment and urgent evaluation, regardless of pregnancy type."
+      };
+    }
+    if (sbp >= 140 || dbp >= 90) {
+      return {
+        cls: "bp-hypertension",
+        label: "Hypertension-in-pregnancy range (AHA 2022 guideline context)",
+        text: "A reading of " + reading + " meets the 140/90 mmHg or higher threshold most guidelines worldwide use to diagnose hypertension in pregnancy. US (ACOG) treatment thresholds are higher, around 160/105-110 mmHg, than most international guidelines -- one of the debated points raised in the AHA statement."
+      };
+    }
+    if (sbp >= 130 || dbp >= 80) {
+      return {
+        cls: "bp-elevated",
+        label: "Elevated (AHA 2022 guideline context)",
+        text: "A reading of " + reading + " is below the standard 140/90 mmHg pregnancy threshold, but at or above the 130/80 mmHg threshold used for the general, non-pregnant population. Reclassifying pregnancy BP readings against that lower threshold has been shown to better flag women at risk for preeclampsia (Garovic et al., 2022)."
+      };
+    }
+    return {
+      cls: "bp-normal",
+      label: "Normal range (AHA 2022 guideline context)",
+      text: "A reading of " + reading + " is below every BP threshold discussed in current hypertension-in-pregnancy guidelines."
+    };
+  }
+
+  function percentile(varName, value) {
+    var all = COHORT.map(function (r) { return r[varName]; }).sort(function (a, b) { return a - b; });
+    var below = 0;
+    all.forEach(function (v) { if (v <= value) below++; });
+    return Math.round((below / all.length) * 100);
+  }
+
+  var SVG_NS = "http://www.w3.org/2000/svg";
+
+  function svgEl(tag, attrs) {
+    var el = document.createElementNS(SVG_NS, tag);
+    for (var key in attrs) {
+      if (Object.prototype.hasOwnProperty.call(attrs, key)) {
+        el.setAttribute(key, attrs[key]);
+      }
+    }
+    return el;
+  }
+
+  function makeProfileChart(input) {
+    var host = document.getElementById("profile-chart");
+    if (!host) return false;
+
+    var order = ["age", "systolic_bp", "diastolic_bp", "bs", "heart_rate"];
+    var pcts = order.map(function (v) { return percentile(v, input[v]); });
+
+    var labelWidth = 108;
+    var trackWidth = 190;
+    var rowHeight = 40;
+    var startY = 16;
+    var width = labelWidth + trackWidth + 42;
+    var height = startY + order.length * rowHeight + 8;
+
+    var svg = svgEl("svg", {
+      viewBox: "0 0 " + width + " " + height,
+      width: "100%",
+      height: String(height)
+    });
+
+    order.forEach(function (v, i) {
+      var y = startY + i * rowHeight;
+      var pct = pcts[i];
+      var barWidth = Math.max(2, trackWidth * (pct / 100));
+      var barColor = Math.abs(pct - 50) >= 25 ? "#b3323b" : "#0e7c7b";
+
+      var labelText = svgEl("text", { x: "0", y: String(y + 13), "font-size": "11", fill: "#1c2430" });
+      labelText.textContent = LABELS[v];
+      svg.appendChild(labelText);
+
+      var track = svgEl("rect", {
+        x: String(labelWidth), y: String(y), width: String(trackWidth),
+        height: "18", rx: "4", fill: "#eef0f5"
+      });
+      svg.appendChild(track);
+
+      var bar = svgEl("rect", {
+        x: String(labelWidth), y: String(y), width: String(barWidth),
+        height: "18", rx: "4", fill: barColor
+      });
+      svg.appendChild(bar);
+
+      var valueText = svgEl("text", {
+        x: String(labelWidth + trackWidth + 8), y: String(y + 13),
+        "font-size": "10", fill: "#4b5768"
+      });
+      valueText.textContent = pct + "th";
+      svg.appendChild(valueText);
+    });
+
+    var lineX = labelWidth + trackWidth * 0.5;
+    var medianLine = svgEl("line", {
+      x1: String(lineX), y1: String(startY - 4),
+      x2: String(lineX), y2: String(startY + order.length * rowHeight - 24),
+      stroke: "#4b5768", "stroke-width": "1.5", "stroke-dasharray": "4,4"
+    });
+    svg.appendChild(medianLine);
+
+    host.innerHTML = "";
+    host.appendChild(svg);
+    return true;
+  }
+
+  function renderResult() {
+    var input = {
+      age: parseFloat(document.getElementById("in-age").value),
+      systolic_bp: parseFloat(document.getElementById("in-sbp").value),
+      diastolic_bp: parseFloat(document.getElementById("in-dbp").value),
+      bs: parseFloat(document.getElementById("in-bs").value),
+      heart_rate: parseFloat(document.getElementById("in-hr").value)
+    };
+
+    var missing = VARS.filter(function (v) { return isNaN(input[v]); });
+    if (missing.length) {
+      alert("Please fill in all five fields before comparing.");
+      return;
+    }
+
+    var neighbors = nearestNeighbors(input);
+    var result = majorityRisk(neighbors);
+
+    var badge = document.getElementById("result-badge");
+    badge.textContent = result.winner;
+    badge.className = "badge-risk " + (
+      result.winner === "low risk" ? "badge-low" : result.winner === "mid risk" ? "badge-mid" : "badge-high"
+    );
+
+    document.getElementById("result-votes").textContent =
+      "of your " + K + " nearest matches: " + result.counts["low risk"] + " low, " +
+      result.counts["mid risk"] + " mid, " + result.counts["high risk"] + " high";
+
+    var bpInfo = classifyBP(input.systolic_bp, input.diastolic_bp);
+    var noteEl = document.getElementById("clinical-note");
+    noteEl.innerHTML = "";
+    noteEl.style.display = "block";
+    noteEl.style.background = "#fbeef8";
+    noteEl.style.border = "1px solid #eccbe4";
+    noteEl.style.borderLeft = "4px solid #c65fae";
+    noteEl.style.borderRadius = "8px";
+    noteEl.style.padding = "0.85rem 1rem";
+    noteEl.style.marginTop = "0.9rem";
+    noteEl.style.fontSize = "0.86rem";
+    noteEl.style.lineHeight = "1.5";
+    noteEl.style.color = "#4b5768";
+
+    var bpLabelEl = document.createElement("span");
+    bpLabelEl.textContent = bpInfo.label;
+    bpLabelEl.style.display = "block";
+    bpLabelEl.style.fontSize = "0.72rem";
+    bpLabelEl.style.fontWeight = "700";
+    bpLabelEl.style.textTransform = "uppercase";
+    bpLabelEl.style.letterSpacing = "0.04em";
+    bpLabelEl.style.marginBottom = "0.3rem";
+    bpLabelEl.style.color = "#93297d";
+    noteEl.appendChild(bpLabelEl);
+    noteEl.appendChild(document.createTextNode(bpInfo.text));
+
+    var pctText = VARS.map(function (v) {
+      return LABELS[v] + " is at the " + percentile(v, input[v]) + "th percentile";
+    }).join("; ");
+
+    document.getElementById("result-explain").innerHTML =
+      "Compared against all " + COHORT.length + " records: " + pctText + " of this cohort. " +
+      "The nearest-neighbor vote leans <strong>" + result.winner + "</strong>, based on the " +
+      K + " cohort records closest to your inputs after standardizing each vital by the cohort mean and SD.";
+
+    document.getElementById("result-panel").classList.add("show");
+
+    var chartWrap = document.getElementById("profile-chart-wrap");
+    var chartCaption = document.getElementById("profile-chart-caption");
+    var chartOk = false;
+    try {
+      chartOk = makeProfileChart(input);
+    } catch (err) {
+      console.warn("Risk explorer: profile chart rendering failed, showing text results only.", err);
+      chartOk = false;
+    }
+    if (chartWrap) chartWrap.style.display = chartOk ? "block" : "none";
+    if (chartCaption) chartCaption.style.display = chartOk ? "block" : "none";
+  }
+
+  var btn = document.getElementById("btn-compare");
+  if (btn) btn.addEventListener("click", renderResult);
+});
+</script>
+<footer class="site-footer">
+Standardization and neighbor lookup mirror the modeling approach in the
+<a href="report.html">report</a>. See the <a href="index.html">home
+page</a> for variable definitions and the data source. <br><br>
+Blood-pressure category thresholds cited above are from Garovic VD,
+Dechend R, Easterling T, et al. <em>Hypertension in Pregnancy:
+Diagnosis, Blood Pressure Goals, and Pharmacotherapy: A Scientific
+Statement From the American Heart Association.</em> Hypertension.
+2022;79(2):e21–e41.
+<a href="https://doi.org/10.1161/HYP.0000000000000208" target="_blank" rel="noopener">doi:10.1161/HYP.0000000000000208</a>.
+</footer>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

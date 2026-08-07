@@ -1,0 +1,227 @@
+/* ---------------------------------------------------------------
+   custom.css — overrides on top of the `flatly` bootswatch theme
+   for the Maternal Health Risk site (rmarkdown::render_site)
+--------------------------------------------------------------- */
+
+:root {
+  --ink: #1c2430;
+  --ink-soft: #4b5768;
+  --teal: #0e7c7b;
+  --teal-dark: #0a5b5a;
+  --teal-tint: #e6f4f3;
+  --plum: #6b4b8a;
+  --low: #1c8a5f;   --low-tint: #e6f6ee;
+  --mid: #b7791f;   --mid-tint: #fdf3e1;
+  --high: #b3323b;  --high-tint: #fbe8e9;
+  --line: #e4e7ee;
+}
+
+body {
+  font-family: "Inter", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--ink);
+  background: #f6f7fb;
+}
+
+.container-fluid.main-container {
+  max-width: 980px;
+}
+
+/* navbar */
+.navbar-default {
+  background-color: #ffffff;
+  border-color: var(--line);
+}
+.navbar-default .navbar-brand,
+.navbar-default .navbar-nav > li > a {
+  color: var(--ink);
+  font-weight: 600;
+}
+.navbar-default .navbar-nav > .active > a {
+  color: var(--teal-dark) !important;
+  background-color: var(--teal-tint) !important;
+}
+.navbar-default .navbar-nav > li > a:hover {
+  color: var(--teal-dark);
+}
+
+h1, h2, h3, h4 { font-weight: 650; letter-spacing: -0.01em; color: var(--ink); }
+h1.title { font-size: 2.2rem; }
+h2 { margin-top: 2.2rem; border-bottom: 1px solid var(--line); padding-bottom: 0.4rem; }
+
+.eyebrow {
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--teal-dark);
+  margin-bottom: 0.4rem;
+}
+
+.lead { font-size: 1.08rem; color: var(--ink-soft); max-width: 640px; }
+
+/* code folding button + code blocks */
+.btn-default {
+  background-color: #fff;
+  border-color: var(--line);
+  color: var(--teal-dark);
+  font-weight: 600;
+}
+pre, pre.r, pre.sourceCode { border-radius: 8px; border: 1px solid var(--line); background: #1c2430; }
+pre code, pre.sourceCode code { color: #d8e2ea; }
+code { color: var(--teal-dark); background: var(--teal-tint); padding: 0.1em 0.35em; border-radius: 4px; }
+
+/* stat / info cards, reused across pages */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.9rem;
+  margin: 1.6rem 0 2rem;
+}
+@media (max-width: 760px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.stat-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+}
+.stat-card .num { font-size: 1.5rem; font-weight: 700; color: var(--ink); }
+.stat-card .label { font-size: 0.78rem; color: var(--ink-soft); margin-top: 0.15rem; }
+
+.card-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.1rem;
+  margin: 1.6rem 0;
+}
+@media (max-width: 760px) { .card-row { grid-template-columns: 1fr; } }
+
+.info-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 1.3rem 1.4rem;
+  box-shadow: 0 1px 2px rgba(20,25,35,0.04), 0 6px 20px rgba(20,25,35,0.05);
+}
+.info-card h3 { margin-top: 0; }
+
+.btn-teal {
+  display: inline-block;
+  background: var(--teal);
+  color: #fff !important;
+  padding: 0.6rem 1.1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.btn-teal:hover { background: var(--teal-dark); text-decoration: none; }
+
+/* risk badges, used in explore.Rmd */
+.badge-risk {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.badge-low  { background: var(--low-tint);  color: var(--low); }
+.badge-mid  { background: var(--mid-tint);  color: var(--mid); }
+.badge-high { background: var(--high-tint); color: var(--high); }
+
+/* explorer form */
+#risk-explorer-app .field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem 1.4rem;
+  margin-bottom: 1rem;
+}
+@media (max-width: 640px) { #risk-explorer-app .field-grid { grid-template-columns: 1fr; } }
+
+#risk-explorer-app label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 0.3rem;
+}
+#risk-explorer-app .hint { font-size: 0.75rem; color: #8b94a3; margin-top: 0.25rem; }
+#risk-explorer-app input[type="number"] {
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #d3d8e2;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+#risk-explorer-app input[type="number"]:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px var(--teal-tint);
+}
+
+.result-panel { display: none; margin-top: 1.4rem; }
+.result-panel.show { display: block; }
+
+.result-head { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+
+.explain-box {
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+  background: var(--teal-tint);
+  border: 1px solid #cfe8e7;
+  border-radius: 8px;
+  padding: 0.75rem 0.95rem;
+  margin-top: 0.9rem;
+}
+
+.chart-box { position: relative; height: 190px; margin-bottom: 0.6rem; }
+.chart-box.tall { height: 270px; margin-top: 0.9rem; }
+.chart-caption { font-size: 0.78rem; color: #8b94a3; margin-top: 0.4rem; }
+
+/* clinical-guideline context box, used in explore.Rmd */
+.clinical-note {
+  display: block;
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin-top: 0.9rem;
+  border-left: 4px solid #d68fc7;
+  background: #fbeef8;
+}
+.clinical-note .cn-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.3rem;
+  color: #a13a8c;
+}
+.clinical-note.bp-severe {
+  border-left-color: #a13a8c;
+  background: #f6dcee;
+}
+.clinical-note.bp-severe .cn-label { color: #7a1f6e; }
+
+.disclaimer {
+  font-size: 0.8rem;
+  color: #8b94a3;
+  border-top: 1px dashed var(--line);
+  padding-top: 0.9rem;
+  margin-top: 1.4rem;
+}
+
+footer.site-footer {
+  margin-top: 3rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--line);
+  color: #8b94a3;
+  font-size: 0.82rem;
+  text-align: center;
+}

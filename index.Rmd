@@ -1,0 +1,92 @@
+---
+title: "Maternal Health Risk"
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.align = "center")
+
+library(tidyverse)
+
+maternal_df =
+  read_csv("data/Maternal Health Risk Data Set.csv") |>
+  janitor::clean_names() |>
+  mutate(risk_level = factor(risk_level, levels = c("low risk", "mid risk", "high risk")))
+```
+
+<div class="eyebrow">IoT-Monitored Clinical Data &middot; Kaggle</div>
+
+# Reading risk before it becomes an emergency
+
+<p class="lead">
+This site works through a dataset of `r nrow(maternal_df)` pregnancies monitored across hospitals,
+community clinics, and maternal health cares using low-cost IoT risk sensors. Six signals — age,
+systolic and diastolic blood pressure, blood glucose, body temperature, and heart rate — are used
+to assign each pregnancy a clinician-labeled risk level: low, mid, or high. The goal here is the
+same one behind most early-warning systems in maternal health: figure out which combinations of
+ordinary vitals are already telling us something, well before an outcome forces the question.
+</p>
+
+<div class="card-row">
+<a href="report.html" class="btn-teal">Read the report &rarr;</a>
+<a href="explore.html" class="btn-teal" style="background:#fff;color:#0a5b5a !important;border:1px solid #cfe8e7;">Try the risk explorer</a>
+</div>
+
+```{r stat-cards, echo = FALSE, results = "asis"}
+n_total  = nrow(maternal_df)
+n_high   = sum(maternal_df$risk_level == "high risk")
+pct_high = round(100 * n_high / n_total, 1)
+
+cat(
+  '<div class="stat-grid">',
+  '<div class="stat-card"><div class="num">', n_total, '</div><div class="label">pregnancies in the cohort</div></div>',
+  '<div class="stat-card"><div class="num">6</div><div class="label">vitals recorded per record</div></div>',
+  '<div class="stat-card"><div class="num">3</div><div class="label">risk levels — low, mid, high</div></div>',
+  '<div class="stat-card"><div class="num">', pct_high, '%</div><div class="label">of records labeled high risk</div></div>',
+  '</div>',
+  sep = "\n"
+)
+```
+
+## What's in the data
+
+Each row is one pregnancy, described by six variables collected through IoT-based patient
+monitoring at the point of care, plus a risk level assigned from those readings.
+
+```{r variable-table, echo = FALSE}
+tibble::tribble(
+  ~Variable,      ~Description,                                     ~Units,
+  "age",          "Age of the woman at the time of pregnancy",       "years",
+  "systolic_bp",  "Upper value of blood pressure",                   "mmHg",
+  "diastolic_bp", "Lower value of blood pressure",                   "mmHg",
+  "bs",           "Blood glucose level",                             "mmol/L",
+  "body_temp",    "Body temperature",                                "°F",
+  "heart_rate",   "Resting heart rate",                              "bpm",
+  "risk_level",   "Clinician-assigned risk during pregnancy",        "low / mid / high"
+) |>
+  knitr::kable()
+```
+
+Source: [Maternal Health Risk Data Set, Kaggle](https://www.kaggle.com/datasets/csafrit2/maternal-health-risk-data).
+Collected from hospitals, community clinics, and maternal health cares via IoT-based risk monitoring.
+
+## Where to go from here
+
+<div class="card-row">
+<div class="info-card">
+<h3>Report</h3>
+<p>Distributions, group comparisons across risk levels, and correlation structure among the six
+vitals — with the analysis code available inline (click <em>Code</em>) if you want to see exactly
+how a figure or number was produced.</p>
+<a href="report.html">Open the report &rarr;</a>
+</div>
+<div class="info-card">
+<h3>Risk Explorer</h3>
+<p>Enter your own vitals — or someone else's — and see where they land relative to this cohort,
+plus a nearest-neighbor read on which risk band they resemble most.</p>
+<a href="explore.html">Open the explorer &rarr;</a>
+</div>
+</div>
+
+<footer class="site-footer">
+Built from the Kaggle Maternal Health Risk Data Set for exploratory and educational purposes — not a diagnostic tool.
+</footer>
