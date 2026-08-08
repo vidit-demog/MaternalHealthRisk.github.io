@@ -11,7 +11,7 @@
 
 
 
-<title>Risk Explorer</title>
+<title>Risk Explorer | Maternal Health Risk</title>
 
 <script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -361,6 +361,9 @@ $(document).ready(function () {
 <li>
   <a href="explore.html">Risk Explorer</a>
 </li>
+<li>
+  <a href="about.html">About</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -386,7 +389,6 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Risk Explorer</h1>
 
 </div>
 
@@ -463,7 +465,7 @@ Compare to cohort
 <div class="result-head">
 <p><span>Nearest-neighbor read:</span> <span id="result-badge"
 class="badge-risk"></span> <span id="result-votes"
-style="color:#8b94a3;font-size:0.85rem;"></span></p>
+style="color:#7c8592;font-size:0.9rem;"></span></p>
 </div>
 <div id="clinical-note">
 
@@ -681,14 +683,14 @@ document.addEventListener("DOMContentLoaded", function () {
     noteEl.style.borderRadius = "8px";
     noteEl.style.padding = "0.85rem 1rem";
     noteEl.style.marginTop = "0.9rem";
-    noteEl.style.fontSize = "0.86rem";
-    noteEl.style.lineHeight = "1.5";
+    noteEl.style.fontSize = "0.92rem";
+    noteEl.style.lineHeight = "1.55";
     noteEl.style.color = "#4b5768";
 
     var bpLabelEl = document.createElement("span");
     bpLabelEl.textContent = bpInfo.label;
     bpLabelEl.style.display = "block";
-    bpLabelEl.style.fontSize = "0.72rem";
+    bpLabelEl.style.fontSize = "0.76rem";
     bpLabelEl.style.fontWeight = "700";
     bpLabelEl.style.textTransform = "uppercase";
     bpLabelEl.style.letterSpacing = "0.04em";

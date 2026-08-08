@@ -1,5 +1,5 @@
 ---
-title: "Maternal Health Risk"
+pagetitle: "Maternal Health Risk"
 ---
 
 ```{r setup, include = FALSE}

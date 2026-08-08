@@ -1,5 +1,5 @@
 ---
-title: "Risk Explorer"
+pagetitle: "Risk Explorer | Maternal Health Risk"
 ---
 
 ```{r setup, include = FALSE}
@@ -86,7 +86,7 @@ widget_html = '
 <div class="result-head">
 <span>Nearest-neighbor read:</span>
 <span class="badge-risk" id="result-badge"></span>
-<span id="result-votes" style="color:#8b94a3;font-size:0.85rem;"></span>
+<span id="result-votes" style="color:#7c8592;font-size:0.9rem;"></span>
 </div>
 <div id="clinical-note"></div>
 <div id="profile-chart-wrap" style="margin-top:0.9rem;display:none;">
@@ -299,14 +299,14 @@ document.addEventListener("DOMContentLoaded", function () {
     noteEl.style.borderRadius = "8px";
     noteEl.style.padding = "0.85rem 1rem";
     noteEl.style.marginTop = "0.9rem";
-    noteEl.style.fontSize = "0.86rem";
-    noteEl.style.lineHeight = "1.5";
+    noteEl.style.fontSize = "0.92rem";
+    noteEl.style.lineHeight = "1.55";
     noteEl.style.color = "#4b5768";
 
     var bpLabelEl = document.createElement("span");
     bpLabelEl.textContent = bpInfo.label;
     bpLabelEl.style.display = "block";
-    bpLabelEl.style.fontSize = "0.72rem";
+    bpLabelEl.style.fontSize = "0.76rem";
     bpLabelEl.style.fontWeight = "700";
     bpLabelEl.style.textTransform = "uppercase";
     bpLabelEl.style.letterSpacing = "0.04em";

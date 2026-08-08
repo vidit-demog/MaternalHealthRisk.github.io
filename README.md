@@ -4,7 +4,9 @@
 
 **An exploratory dashboard on maternal health risk, built entirely in R Markdown.**
 
-[Live site](#) · [Report](#) · [Risk Explorer](#)
+[Live site](https://vidit-demog.github.io/MaternalHealthRisk.github.io/) ·
+[Report](https://vidit-demog.github.io/MaternalHealthRisk.github.io/report.html) ·
+[Risk Explorer](https://vidit-demog.github.io/MaternalHealthRisk.github.io/explore.html)
 
 </div>
 
@@ -19,18 +21,20 @@ via IoT-based risk sensors, each labeled with a clinician-assigned risk level (l
 from six vitals: age, systolic and diastolic blood pressure, blood glucose, body temperature,
 and heart rate.
 
-The site has three pages: a landing page, a full exploratory analysis, and an interactive tool
-that lets a visitor enter their own vitals and see how they compare against the cohort. It's
-designed to knit and deploy the way a course or personal data-science project typically does —
-`.Rmd` → `rmarkdown::render_site()` → static HTML → GitHub Pages — with no backend server.
+The site has four pages: a landing page, a full exploratory analysis, an interactive tool
+that lets a visitor enter their own vitals and see how they compare against the cohort, and an
+about page. It's designed to knit and deploy the way a course or personal data-science project
+typically does — `.Rmd` → `rmarkdown::render_site()` → static HTML → GitHub Pages — with no
+backend server.
 
 ## Pages
 
 | Page | File | Contents |
 |---|---|---|
 | **Home** | `index.Rmd` | Dataset overview, variable definitions, cohort summary stats |
-| **Report** | `report.Rmd` | Distributions by risk level, correlation structure, a data-quality note, and a baseline multinomial logistic classifier |
-| **Risk Explorer** | `explore.Rmd` | Interactive k-NN comparison tool — enter your own vitals and see which risk band they resemble most |
+| **Report** | `report.Rmd` | Table 1, data quality flags, distributions by risk level, correlation structure, and a baseline multinomial logistic classifier |
+| **Risk Explorer** | `explore.Rmd` | Interactive k-NN comparison tool plus an AHA blood pressure benchmark — enter your own vitals and see which risk band they resemble most |
+| **About** | `about.Rmd` | Motivation for the site, with links to a QA/QC repository and an MS practicum report |
 
 All analysis code in `report.Rmd` is folded by default (`code_folding: hide`); click **Code**
 above any table or figure to expand the exact R that produced it.
@@ -43,9 +47,11 @@ above any table or figure to expand the exact R that produced it.
 ├── index.Rmd               # → index.html
 ├── report.Rmd               # → report.html
 ├── explore.Rmd               # → explore.html
+├── about.Rmd               # → about.html
 ├── assets/
 │   ├── custom.css          # theme overrides on top of the flatly bootswatch theme
-│   └── header.html         # <head> includes (webfont)
+│   ├── header.html         # <head> includes (webfont)
+│   └── vidit-tripathi-practicum-report.pdf   # linked from the About page
 └── data/
     └── Maternal Health Risk Data Set.csv
 ```
@@ -84,8 +90,8 @@ either:
 - click **Build → Build Website** in the Build pane, or
 - run `rmarkdown::render_site()` from the console
 
-Both knit all three `.Rmd` files and write `index.html`, `report.html`, and `explore.html`
-into the project root. Open `index.html` in a browser to preview locally.
+Both knit all four `.Rmd` files and write `index.html`, `report.html`, `explore.html`, and
+`about.html` into the project root. Open `index.html` in a browser to preview locally.
 
 ## Deploying to GitHub Pages
 
