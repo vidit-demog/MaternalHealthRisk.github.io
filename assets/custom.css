@@ -36,18 +36,47 @@ body {
   margin: 0 auto;
   padding-left: 1.5rem;
   padding-right: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* faint watermark, fixed behind the content on every page */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  right: -6vw;
+  width: 46vw;
+  max-width: 620px;
+  height: 100vh;
+  background-image: url("img/logo-mark.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  opacity: 0.05;
+  z-index: 0;
+  pointer-events: none;
 }
 
 /* navbar */
 .navbar-default {
   background-color: #ffffff;
   border-color: var(--line);
+  position: relative;
+  z-index: 2;
 }
 .navbar-default .navbar-brand,
 .navbar-default .navbar-nav > li > a {
   color: var(--ink);
   font-weight: 600;
   font-size: 0.95rem;
+}
+.navbar-default .navbar-brand {
+  background-image: url("img/logo-64.png");
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 26px 26px;
+  padding-left: 36px;
 }
 .navbar-default .navbar-nav > .active > a {
   color: var(--teal-dark) !important;
