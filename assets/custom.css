@@ -10,6 +10,9 @@
   --teal-dark: #0a5b5a;
   --teal-tint: #e6f4f3;
   --plum: #6b4b8a;
+  --magenta: #a13a8c;
+  --magenta-dark: #7a1f6e;
+  --magenta-tint: #fbeef8;
   --low: #1c8a5f;   --low-tint: #e6f6ee;
   --mid: #b7791f;   --mid-tint: #fdf3e1;
   --high: #b3323b;  --high-tint: #fbe8e9;
@@ -178,6 +181,18 @@ table { font-size: 0.95rem; }
 }
 .btn-teal:hover { background: var(--teal-dark); text-decoration: none; }
 
+.btn-magenta {
+  display: inline-block;
+  background: var(--magenta);
+  color: #fff !important;
+  padding: 0.65rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+.btn-magenta:hover { background: var(--magenta-dark); text-decoration: none; }
+
 /* risk badges, used in explore.Rmd */
 .badge-risk {
   display: inline-flex;
@@ -264,13 +279,13 @@ table { font-size: 0.95rem; }
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin-bottom: 0.35rem;
-  color: #a13a8c;
+  color: var(--magenta);
 }
 .clinical-note.bp-severe {
-  border-left-color: #a13a8c;
+  border-left-color: var(--magenta);
   background: #f6dcee;
 }
-.clinical-note.bp-severe .cn-label { color: #7a1f6e; }
+.clinical-note.bp-severe .cn-label { color: var(--magenta-dark); }
 
 .disclaimer {
   font-size: 0.85rem;
