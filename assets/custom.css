@@ -170,18 +170,12 @@ thead tr:first-child th:last-child  { border-top-right-radius: 9px; }
 tbody tr:last-child td:first-child  { border-bottom-left-radius: 9px; }
 tbody tr:last-child td:last-child   { border-bottom-right-radius: 9px; }
 
-/* coefficient table: rows come in pairs (high risk, mid risk) per vital,
-   so stripe by pairs rather than by single row to make each vital's two
-   effects read as one visual group */
-.coef-table tbody tr:nth-child(4n+1),
-.coef-table tbody tr:nth-child(4n+2) {
-  background: #fff;
-}
-.coef-table tbody tr:nth-child(4n+3),
-.coef-table tbody tr:nth-child(4n) {
-  background: var(--magenta-tint);
-}
-.coef-table tbody tr:hover { background: #f3e4ef; }
+/* coefficient table: each vital's two rows (high risk, mid risk) get an
+   explicit inline background set from R, so the pairing is exact rather
+   than relying on nth-child math against a table pandoc doesn't always
+   mark up the way that math assumes. !important here is intentional --
+   it's overriding an inline style on hover only. */
+.coef-table tbody tr:hover { background: #f3e4ef !important; }
 
 /* stat / info cards, reused across pages */
 .stat-grid {

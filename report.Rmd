@@ -345,8 +345,8 @@ estimate means that vital, holding the others fixed, pulls the classification aw
 and toward mid or high risk, and a negative one pulls back toward low risk. Rows are grouped by
 vital, high risk above mid risk, so the two effects for a given vital sit next to each other.
 
-```{r coef-table}
-tidy(fit) |>
+```{r coef-table, results = "asis"}
+coef_df = tidy(fit) |>
   filter(term != "(Intercept)") |>
   mutate(
     across(where(is.numeric), ~round(.x, 3)),
@@ -354,10 +354,37 @@ tidy(fit) |>
   ) |>
   arrange(term, y.level) |>
   transmute(
-    `Risk level` = y.level, Variable = term, Estimate = estimate,
-    `Std. Error` = std.error, z = statistic, p = p.value
+    risk_level = y.level, variable = term, estimate = estimate,
+    std_error = std.error, z = statistic, p = p.value
   ) |>
-  knitr::kable(table.attr = 'class="coef-table"')
+  mutate(
+    row_bg = if_else(row_number() %% 2 == 1, "#ffffff", "#fbeef8")
+  )
+
+coef_rows_html = coef_df |>
+  purrr::pmap_chr(function(risk_level, variable, estimate, std_error, z, p, row_bg) {
+    paste0(
+      '<tr style="background:', row_bg, ';">',
+      '<td>', risk_level, '</td>',
+      '<td>', variable, '</td>',
+      '<td style="text-align:right;">', estimate, '</td>',
+      '<td style="text-align:right;">', std_error, '</td>',
+      '<td style="text-align:right;">', z, '</td>',
+      '<td style="text-align:right;">', p, '</td>',
+      '</tr>'
+    )
+  }) |>
+  paste(collapse = "\n")
+
+cat(
+  '<table class="coef-table">',
+  '<thead><tr><th>Risk level</th><th>Variable</th><th>Estimate</th><th>Std. Error</th><th>z</th><th>p</th></tr></thead>',
+  '<tbody>',
+  coef_rows_html,
+  '</tbody>',
+  '</table>',
+  sep = "\n"
+)
 ```
 
 ```{r top-coef, include = FALSE}
