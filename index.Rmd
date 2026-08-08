@@ -27,7 +27,7 @@ ordinary vitals are already telling us something, well before an outcome forces 
 </p>
 
 <div class="card-row">
-<a href="report.html" class="btn-teal">Read the report &rarr;</a>
+<a href="report.html" class="btn-magenta">Read the report &rarr;</a>
 <a href="explore.html" class="btn-teal" style="background:#fff;color:#0a5b5a !important;border:1px solid #cfe8e7;">Try the risk explorer</a>
 </div>
 

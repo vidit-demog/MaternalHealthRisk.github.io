@@ -132,7 +132,56 @@ pre, pre.r, pre.sourceCode { border-radius: 8px; border: 1px solid var(--line); 
 pre code, pre.sourceCode code { color: #d8e2ea; }
 code { color: var(--teal-dark); background: var(--teal-tint); padding: 0.1em 0.35em; border-radius: 4px; font-size: 0.9em; }
 
-table { font-size: 0.95rem; }
+/* kable tables render as bare bootstrap tables by default, which reads
+   as plain data-dump rather than matching the card/badge language used
+   everywhere else on the site */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  margin: 1.3rem 0 1.9rem;
+  font-size: 0.92rem;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(20,25,35,0.04), 0 6px 20px rgba(20,25,35,0.05);
+}
+thead th {
+  background: #f6f7fb;
+  text-align: left;
+  font-weight: 700;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid var(--line);
+}
+tbody td, tbody th {
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-weight: 400;
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: #f8fafc; }
+thead tr:first-child th:first-child { border-top-left-radius: 9px; }
+thead tr:first-child th:last-child  { border-top-right-radius: 9px; }
+tbody tr:last-child td:first-child  { border-bottom-left-radius: 9px; }
+tbody tr:last-child td:last-child   { border-bottom-right-radius: 9px; }
+
+/* coefficient table: rows come in pairs (high risk, mid risk) per vital,
+   so stripe by pairs rather than by single row to make each vital's two
+   effects read as one visual group */
+.coef-table tbody tr:nth-child(4n+1),
+.coef-table tbody tr:nth-child(4n+2) {
+  background: #fff;
+}
+.coef-table tbody tr:nth-child(4n+3),
+.coef-table tbody tr:nth-child(4n) {
+  background: var(--magenta-tint);
+}
+.coef-table tbody tr:hover { background: #f3e4ef; }
 
 /* stat / info cards, reused across pages */
 .stat-grid {

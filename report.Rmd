@@ -39,7 +39,7 @@ systolic and diastolic blood pressure, blood glucose (BS), body temperature, and
 against the clinician-assigned risk level (low / mid / high). Code for every table and figure
 below is folded by default; click **Code** to expand it.
 
-## Table 1: cohort characteristics
+## Cohort characteristics
 
 Before splitting anything by risk level, we look at the cohort as a whole: the same six vitals,
 not yet grouped.
@@ -153,7 +153,9 @@ everything else in this section, we name it rather than silently correct it.
 maternal_df |>
   group_by(risk_level) |>
   summarise(n = n(), .groups = "drop") |>
-  mutate(pct = round(100 * n / sum(n), 1))
+  mutate(pct = round(100 * n / sum(n), 1)) |>
+  transmute(`Risk level` = risk_level, N = n, `%` = pct) |>
+  knitr::kable()
 ```
 
 ```{r risk-bar}
@@ -179,10 +181,14 @@ maternal_df |>
   pivot_longer(c(age, systolic_bp, diastolic_bp, bs, body_temp, heart_rate),
                names_to = "variable", values_to = "value") |>
   group_by(variable, risk_level) |>
-  summarise(mean = round(mean(value), 2), sd = round(sd(value), 2), .groups = "drop") |>
-  pivot_wider(names_from = risk_level, values_from = c(mean, sd)) |>
-  knitr::kable()
+  summarise(cell = paste0(round(mean(value), 2), " (", round(sd(value), 2), ")"), .groups = "drop") |>
+  pivot_wider(names_from = risk_level, values_from = cell) |>
+  mutate(variable = cont_labels[variable]) |>
+  rename(Characteristic = variable) |>
+  knitr::kable(align = c("l", "r", "r", "r"))
 ```
+
+Values above are mean (SD) within each risk level.
 
 ```{r boxplots, fig.height = 7}
 p2 = maternal_df |>
@@ -298,34 +304,66 @@ fit = multinom(
 
 pred = predict(fit, newdata = test_std)
 acc  = mean(pred == test_df$risk_level)
+```
 
-table(Predicted = pred, Actual = test_df$risk_level)
+```{r confusion-heatmap}
+conf_df = tibble(Predicted = pred, Actual = test_df$risk_level) |>
+  count(Predicted, Actual, name = "n") |>
+  complete(Predicted = levels(test_df$risk_level), Actual = levels(test_df$risk_level), fill = list(n = 0)) |>
+  mutate(label_color = if_else(n > max(n) * 0.55, "white", "#1c2430"))
+
+p4 = conf_df |>
+  ggplot(aes(x = Actual, y = Predicted, fill = n,
+             text = paste0("Predicted ", Predicted, ", actual ", Actual, ": ", n))) +
+  geom_tile(color = "#f6f7fb", linewidth = 1.2) +
+  geom_text(aes(label = n, color = label_color), fontface = "bold", size = 4) +
+  scale_color_identity() +
+  scale_fill_gradient(low = "#fbeef8", high = "#7a1f6e") +
+  labs(x = "Actual", y = "Predicted", title = "Confusion matrix: predicted vs. actual risk level", fill = "Count")
+
+ggplotly(p4, tooltip = "text")
 ```
 
 Held-out accuracy is **`r scales::percent(acc, accuracy = 0.1)`**, against a
 `r scales::percent(max(prop.table(table(test_df$risk_level))), accuracy = 0.1)` baseline for
-always predicting the majority class in the test fold. The confusion matrix above shows where
+always predicting the majority class in the test fold. The darkest cells above sit on the
+diagonal, which is where predicted and actual risk level agree; the confusion matrix shows where
 the model actually struggles. Mid-risk pregnancies are the hardest to separate cleanly, which
 lines up with the boxplots: mid-risk vitals sit between the low- and high-risk groups on almost
 every variable, rather than forming a distinct cluster of their own.
 
+```{r term-labels, include = FALSE}
+var_label_map = c(
+  age = "age", systolic_bp = "systolic blood pressure", diastolic_bp = "diastolic blood pressure",
+  bs = "blood glucose", body_temp = "body temperature", heart_rate = "heart rate"
+)
+```
+
+The model is fit with low risk as the reference category, since it is the first level of
+`risk_level`. Every coefficient below is therefore relative to a low-risk pregnancy: a positive
+estimate means that vital, holding the others fixed, pulls the classification away from low risk
+and toward mid or high risk, and a negative one pulls back toward low risk. Rows are grouped by
+vital, high risk above mid risk, so the two effects for a given vital sit next to each other.
+
 ```{r coef-table}
 tidy(fit) |>
   filter(term != "(Intercept)") |>
-  mutate(across(where(is.numeric), ~round(.x, 3))) |>
-  arrange(y.level, term) |>
-  knitr::kable()
+  mutate(
+    across(where(is.numeric), ~round(.x, 3)),
+    term = str_to_sentence(var_label_map[term])
+  ) |>
+  arrange(term, y.level) |>
+  transmute(
+    `Risk level` = y.level, Variable = term, Estimate = estimate,
+    `Std. Error` = std.error, z = statistic, p = p.value
+  ) |>
+  knitr::kable(table.attr = 'class="coef-table"')
 ```
 
 ```{r top-coef, include = FALSE}
 coef_rank = tidy(fit) |>
   filter(y.level == "high risk", term != "(Intercept)") |>
   arrange(desc(abs(estimate)))
-
-var_label_map = c(
-  age = "age", systolic_bp = "systolic blood pressure", diastolic_bp = "diastolic blood pressure",
-  bs = "blood glucose", body_temp = "body temperature", heart_rate = "heart rate"
-)
 
 top1_label = var_label_map[[coef_rank$term[1]]]
 top2_label = var_label_map[[coef_rank$term[2]]]
