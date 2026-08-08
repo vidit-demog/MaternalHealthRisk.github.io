@@ -378,7 +378,7 @@ coef_rows_html = coef_df |>
 
 cat(
   '<table class="coef-table">',
-  '<thead><tr><th>Risk level</th><th>Variable</th><th>Estimate</th><th>Std. Error</th><th>z</th><th>p</th></tr></thead>',
+  '<thead><tr><th>Risk level</th><th>Variable</th><th style="text-align:right;">Estimate</th><th style="text-align:right;">Std. Error</th><th style="text-align:right;">z</th><th style="text-align:right;">p</th></tr></thead>',
   '<tbody>',
   coef_rows_html,
   '</tbody>',
