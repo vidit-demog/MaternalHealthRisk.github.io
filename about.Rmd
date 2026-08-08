@@ -1,0 +1,44 @@
+---
+pagetitle: "About | Maternal Health Risk"
+---
+
+<div class="eyebrow">About</div>
+
+# Why this site exists
+
+<p class="lead">
+I built this mainly so I would have something live to point to on a resume or a LinkedIn
+profile: a working example of how I approach a dataset, rather than a static writeup. The
+exploratory analysis, the data quality checks, the classifier, and the interactive comparison
+tool are all meant to show that process end to end, on a small public dataset, in the open.
+</p>
+
+<p>
+It is also a deliberately small example. The dataset behind it is cross-sectional, six
+variables, about a thousand rows before accounting for the duplicate records flagged in the
+report. For a sense of how I work with larger, messier, and more structurally complex data, the
+two links below are a better reference than this site on its own.
+</p>
+
+## More of my work
+
+<div class="card-row">
+<div class="info-card">
+<h3>Data QA/QC and cleaning</h3>
+<p>A repository working through incident hypertension data, with the raw data handling, QA/QC
+checks, and analysis code left visible rather than abstracted away.</p>
+<a href="https://github.com/vidit-demog/Incident_hypertension" target="_blank" rel="noopener">View the repository &rarr;</a>
+</div>
+<div class="info-card">
+<h3>MS practicum report</h3>
+<p>A longitudinal analysis of biological aging using Health and Retirement Study data, built
+with a hierarchical model and validated against mortality and disease outcomes. A closer look
+at what I can do with a larger and more complex dataset than this one.</p>
+<a href="assets/vidit-tripathi-practicum-report.pdf" target="_blank" rel="noopener">Download the report (PDF) &rarr;</a>
+</div>
+</div>
+
+<footer class="site-footer">
+Built by Vidit Tripathi. See the <a href="index.html">home page</a> for the dataset this site is
+based on.
+</footer>

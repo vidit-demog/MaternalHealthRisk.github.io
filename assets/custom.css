@@ -16,14 +16,26 @@
   --line: #e4e7ee;
 }
 
+html {
+  font-size: 17px;
+}
+
 body {
   font-family: "Inter", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color: var(--ink);
   background: #f6f7fb;
+  line-height: 1.65;
+  font-size: 1rem;
 }
 
+/* the default Bootstrap container-fluid has no auto margin, so on wide
+   screens the content column was hugging the left edge instead of
+   sitting centered */
 .container-fluid.main-container {
   max-width: 980px;
+  margin: 0 auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
 }
 
 /* navbar */
@@ -35,6 +47,7 @@ body {
 .navbar-default .navbar-nav > li > a {
   color: var(--ink);
   font-weight: 600;
+  font-size: 0.95rem;
 }
 .navbar-default .navbar-nav > .active > a {
   color: var(--teal-dark) !important;
@@ -44,21 +57,37 @@ body {
   color: var(--teal-dark);
 }
 
-h1, h2, h3, h4 { font-weight: 650; letter-spacing: -0.01em; color: var(--ink); }
-h1.title { font-size: 2.2rem; }
-h2 { margin-top: 2.2rem; border-bottom: 1px solid var(--line); padding-bottom: 0.4rem; }
+/* R Markdown auto-generates a visible title block from the `title:`
+   field in each page's YAML. Every page also has its own hero heading
+   in the body, so both were rendering stacked on top of each other in
+   two different styles. Pages now use `pagetitle:` instead of `title:`,
+   which sets the browser tab title without emitting this block -- this
+   rule is left in only as a safety net in case a title block appears. */
+.page-header, h1.title { display: none; }
+
+h1, h2, h3, h4 {
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  font-family: "Inter", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+h1 { font-size: 2rem; line-height: 1.25; margin-bottom: 0.6rem; }
+h2 { font-size: 1.35rem; margin-top: 2.4rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem; }
+h3 { font-size: 1.1rem; }
+
+p { margin-bottom: 1.1rem; }
 
 .eyebrow {
   display: inline-block;
   text-transform: uppercase;
   letter-spacing: 0.09em;
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   font-weight: 700;
   color: var(--teal-dark);
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.5rem;
 }
 
-.lead { font-size: 1.08rem; color: var(--ink-soft); max-width: 640px; }
+.lead { font-size: 1.1rem; color: var(--ink-soft); max-width: 640px; line-height: 1.6; }
 
 /* code folding button + code blocks */
 .btn-default {
@@ -67,9 +96,11 @@ h2 { margin-top: 2.2rem; border-bottom: 1px solid var(--line); padding-bottom: 0
   color: var(--teal-dark);
   font-weight: 600;
 }
-pre, pre.r, pre.sourceCode { border-radius: 8px; border: 1px solid var(--line); background: #1c2430; }
+pre, pre.r, pre.sourceCode { border-radius: 8px; border: 1px solid var(--line); background: #1c2430; font-size: 0.85rem; }
 pre code, pre.sourceCode code { color: #d8e2ea; }
-code { color: var(--teal-dark); background: var(--teal-tint); padding: 0.1em 0.35em; border-radius: 4px; }
+code { color: var(--teal-dark); background: var(--teal-tint); padding: 0.1em 0.35em; border-radius: 4px; font-size: 0.9em; }
+
+table { font-size: 0.95rem; }
 
 /* stat / info cards, reused across pages */
 .stat-grid {
@@ -87,7 +118,7 @@ code { color: var(--teal-dark); background: var(--teal-tint); padding: 0.1em 0.3
   padding: 1rem 1.1rem;
 }
 .stat-card .num { font-size: 1.5rem; font-weight: 700; color: var(--ink); }
-.stat-card .label { font-size: 0.78rem; color: var(--ink-soft); margin-top: 0.15rem; }
+.stat-card .label { font-size: 0.8rem; color: var(--ink-soft); margin-top: 0.15rem; }
 
 .card-row {
   display: grid;
@@ -110,9 +141,10 @@ code { color: var(--teal-dark); background: var(--teal-tint); padding: 0.1em 0.3
   display: inline-block;
   background: var(--teal);
   color: #fff !important;
-  padding: 0.6rem 1.1rem;
+  padding: 0.65rem 1.2rem;
   border-radius: 8px;
   font-weight: 600;
+  font-size: 0.95rem;
   text-decoration: none;
 }
 .btn-teal:hover { background: var(--teal-dark); text-decoration: none; }
@@ -122,9 +154,9 @@ code { color: var(--teal-dark); background: var(--teal-tint); padding: 0.1em 0.3
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.3rem 0.75rem;
+  padding: 0.32rem 0.8rem;
   border-radius: 999px;
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.03em;
@@ -137,25 +169,25 @@ code { color: var(--teal-dark); background: var(--teal-tint); padding: 0.1em 0.3
 #risk-explorer-app .field-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1rem 1.4rem;
-  margin-bottom: 1rem;
+  gap: 1.1rem 1.4rem;
+  margin-bottom: 1.1rem;
 }
 @media (max-width: 640px) { #risk-explorer-app .field-grid { grid-template-columns: 1fr; } }
 
 #risk-explorer-app label {
   display: block;
-  font-size: 0.82rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--ink);
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.35rem;
 }
-#risk-explorer-app .hint { font-size: 0.75rem; color: #8b94a3; margin-top: 0.25rem; }
+#risk-explorer-app .hint { font-size: 0.82rem; color: #7c8592; margin-top: 0.3rem; }
 #risk-explorer-app input[type="number"] {
   width: 100%;
-  padding: 0.55rem 0.7rem;
+  padding: 0.6rem 0.75rem;
   border: 1px solid #d3d8e2;
   border-radius: 8px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-family: inherit;
 }
 #risk-explorer-app input[type="number"]:focus {
@@ -167,40 +199,42 @@ code { color: var(--teal-dark); background: var(--teal-tint); padding: 0.1em 0.3
 .result-panel { display: none; margin-top: 1.4rem; }
 .result-panel.show { display: block; }
 
-.result-head { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+.result-head { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; margin-bottom: 0.6rem; font-size: 1rem; }
 
 .explain-box {
-  font-size: 0.86rem;
+  font-size: 0.92rem;
+  line-height: 1.55;
   color: var(--ink-soft);
   background: var(--teal-tint);
   border: 1px solid #cfe8e7;
   border-radius: 8px;
-  padding: 0.75rem 0.95rem;
+  padding: 0.85rem 1rem;
   margin-top: 0.9rem;
 }
 
 .chart-box { position: relative; height: 190px; margin-bottom: 0.6rem; }
 .chart-box.tall { height: 270px; margin-top: 0.9rem; }
-.chart-caption { font-size: 0.78rem; color: #8b94a3; margin-top: 0.4rem; }
+.chart-caption { font-size: 0.82rem; color: #7c8592; margin-top: 0.5rem; }
 
 /* clinical-guideline context box, used in explore.Rmd */
 .clinical-note {
   display: block;
-  font-size: 0.86rem;
+  font-size: 0.92rem;
+  line-height: 1.55;
   color: var(--ink-soft);
   border-radius: 8px;
-  padding: 0.85rem 1rem;
+  padding: 0.9rem 1rem;
   margin-top: 0.9rem;
   border-left: 4px solid #d68fc7;
   background: #fbeef8;
 }
 .clinical-note .cn-label {
   display: block;
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.35rem;
   color: #a13a8c;
 }
 .clinical-note.bp-severe {
@@ -210,8 +244,8 @@ code { color: var(--teal-dark); background: var(--teal-tint); padding: 0.1em 0.3
 .clinical-note.bp-severe .cn-label { color: #7a1f6e; }
 
 .disclaimer {
-  font-size: 0.8rem;
-  color: #8b94a3;
+  font-size: 0.85rem;
+  color: #7c8592;
   border-top: 1px dashed var(--line);
   padding-top: 0.9rem;
   margin-top: 1.4rem;
@@ -221,7 +255,16 @@ footer.site-footer {
   margin-top: 3rem;
   padding-top: 1.2rem;
   border-top: 1px solid var(--line);
-  color: #8b94a3;
-  font-size: 0.82rem;
+  color: #7c8592;
+  font-size: 0.85rem;
   text-align: center;
+  line-height: 1.6;
 }
+
+/* about page */
+.about-links {
+  display: grid;
+  gap: 0.9rem;
+  margin: 1.6rem 0;
+}
+.about-links .info-card p { margin-bottom: 0.6rem; }
