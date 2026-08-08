@@ -307,17 +307,25 @@ acc  = mean(pred == test_df$risk_level)
 ```
 
 ```{r confusion-heatmap}
+risk_order = levels(test_df$risk_level)
+
 conf_df = tibble(Predicted = pred, Actual = test_df$risk_level) |>
   count(Predicted, Actual, name = "n") |>
-  complete(Predicted = levels(test_df$risk_level), Actual = levels(test_df$risk_level), fill = list(n = 0)) |>
-  mutate(label_color = if_else(n > max(n) * 0.55, "white", "#1c2430"))
+  complete(Predicted = risk_order, Actual = risk_order, fill = list(n = 0)) |>
+  mutate(
+    Predicted = factor(Predicted, levels = risk_order),
+    Actual = factor(Actual, levels = risk_order)
+  )
+
+conf_light = filter(conf_df, n <= max(n) * 0.55)
+conf_dark  = filter(conf_df, n >  max(n) * 0.55)
 
 p4 = conf_df |>
   ggplot(aes(x = Actual, y = Predicted, fill = n,
              text = paste0("Predicted ", Predicted, ", actual ", Actual, ": ", n))) +
   geom_tile(color = "#f6f7fb", linewidth = 1.2) +
-  geom_text(aes(label = n, color = label_color), fontface = "bold", size = 4) +
-  scale_color_identity() +
+  geom_text(data = conf_light, aes(label = n), color = "#1c2430", fontface = "bold", size = 4) +
+  geom_text(data = conf_dark, aes(label = n), color = "white", fontface = "bold", size = 4) +
   scale_fill_gradient(low = "#fbeef8", high = "#7a1f6e") +
   labs(x = "Actual", y = "Predicted", title = "Confusion matrix: predicted vs. actual risk level", fill = "Count")
 
