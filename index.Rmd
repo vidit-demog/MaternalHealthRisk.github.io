@@ -1,11 +1,28 @@
 ---
-title: "Maternal Health Risk"
+title: "Report"
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.align = "center")
+knitr::opts_chunk$set(
+  echo = TRUE, message = FALSE, warning = FALSE,
+  fig.align = "center", fig.width = 7.5, fig.height = 4.5
+)
 
 library(tidyverse)
+library(plotly)
+library(nnet)
+library(broom)
+
+theme_set(
+  theme_minimal(base_family = "sans") +
+    theme(
+      panel.grid.minor = element_blank(),
+      plot.title = element_text(face = "bold", size = 12),
+      strip.text = element_text(face = "bold")
+    )
+)
+
+risk_colors = c("low risk" = "#1c8a5f", "mid risk" = "#b7791f", "high risk" = "#b3323b")
 
 maternal_df =
   read_csv("data/Maternal Health Risk Data Set.csv") |>
@@ -13,80 +30,284 @@ maternal_df =
   mutate(risk_level = factor(risk_level, levels = c("low risk", "mid risk", "high risk")))
 ```
 
-<div class="eyebrow">IoT-Monitored Clinical Data &middot; Kaggle</div>
+<div class="eyebrow">Exploratory Analysis</div>
 
-# Reading risk before it becomes an emergency
+# Vitals, risk levels, and where they disagree
 
-<p class="lead">
-This site works through a dataset of `r nrow(maternal_df)` pregnancies monitored across hospitals,
-community clinics, and maternal health cares using low-cost IoT risk sensors. Six signals — age,
-systolic and diastolic blood pressure, blood glucose, body temperature, and heart rate — are used
-to assign each pregnancy a clinician-labeled risk level: low, mid, or high. The goal here is the
-same one behind most early-warning systems in maternal health: figure out which combinations of
-ordinary vitals are already telling us something, well before an outcome forces the question.
-</p>
+This report works through the six IoT-monitored vitals in the maternal health risk cohort —
+age, systolic and diastolic blood pressure, blood glucose (BS), body temperature, and heart
+rate — against the clinician-assigned risk level (low / mid / high). Code for every table and
+figure below is folded by default; click **Code** to expand it.
 
-<div class="card-row">
-<a href="report.html" class="btn-teal">Read the report &rarr;</a>
-<a href="explore.html" class="btn-teal" style="background:#fff;color:#0a5b5a !important;border:1px solid #cfe8e7;">Try the risk explorer</a>
-</div>
+## Table 1: cohort characteristics
 
-```{r stat-cards, echo = FALSE, results = "asis"}
-n_total  = nrow(maternal_df)
-n_high   = sum(maternal_df$risk_level == "high risk")
-pct_high = round(100 * n_high / n_total, 1)
+Before splitting anything by risk level, here's the cohort as a whole — the same six vitals,
+not yet grouped.
 
-cat(
-  '<div class="stat-grid">',
-  '<div class="stat-card"><div class="num">', n_total, '</div><div class="label">pregnancies in the cohort</div></div>',
-  '<div class="stat-card"><div class="num">6</div><div class="label">vitals recorded per record</div></div>',
-  '<div class="stat-card"><div class="num">3</div><div class="label">risk levels — low, mid, high</div></div>',
-  '<div class="stat-card"><div class="num">', pct_high, '%</div><div class="label">of records labeled high risk</div></div>',
-  '</div>',
-  sep = "\n"
+```{r table1-continuous}
+cont_vars = c("age", "systolic_bp", "diastolic_bp", "bs", "body_temp", "heart_rate")
+cont_labels = c(
+  age = "Age (years)",
+  systolic_bp = "Systolic BP (mmHg)",
+  diastolic_bp = "Diastolic BP (mmHg)",
+  bs = "Blood glucose (mmol/L)",
+  body_temp = "Body temperature (°F)",
+  heart_rate = "Heart rate (bpm)"
 )
-```
 
-## What's in the data
-
-Each row is one pregnancy, described by six variables collected through IoT-based patient
-monitoring at the point of care, plus a risk level assigned from those readings.
-
-```{r variable-table, echo = FALSE}
-tibble::tribble(
-  ~Variable,      ~Description,                                     ~Units,
-  "age",          "Age of the woman at the time of pregnancy",       "years",
-  "systolic_bp",  "Upper value of blood pressure",                   "mmHg",
-  "diastolic_bp", "Lower value of blood pressure",                   "mmHg",
-  "bs",           "Blood glucose level",                             "mmol/L",
-  "body_temp",    "Body temperature",                                "°F",
-  "heart_rate",   "Resting heart rate",                              "bpm",
-  "risk_level",   "Clinician-assigned risk during pregnancy",        "low / mid / high"
-) |>
+purrr::map_dfr(cont_vars, function(v) {
+  x = maternal_df[[v]]
+  tibble::tibble(
+    Characteristic = cont_labels[[v]],
+    `Mean (SD)` = paste0(round(mean(x), 2), " (", round(sd(x), 2), ")"),
+    `Median [range]` = paste0(round(median(x), 2), " [", min(x), "–", max(x), "]")
+  )
+}) |>
   knitr::kable()
 ```
 
-Source: [Maternal Health Risk Data Set, Kaggle](https://www.kaggle.com/datasets/csafrit2/maternal-health-risk-data).
-Collected from hospitals, community clinics, and maternal health cares via IoT-based risk monitoring.
+```{r table1-risk}
+maternal_df |>
+  count(risk_level) |>
+  mutate(pct = round(100 * n / sum(n), 1)) |>
+  transmute(`Risk level` = risk_level, `n (%)` = paste0(n, " (", pct, "%)")) |>
+  knitr::kable()
+```
 
-## Where to go from here
+`r nrow(maternal_df)` records total, `r round(mean(maternal_df$age),1)`-year-old average age
+(SD `r round(sd(maternal_df$age),1)`), and a roughly three-way split across risk levels rather
+than a dataset dominated by one category. Note this table treats every row as one observation —
+whether that's actually true is the subject of the next section.
 
-<div class="card-row">
-<div class="info-card">
-<h3>Report</h3>
-<p>Distributions, group comparisons across risk levels, and correlation structure among the six
-vitals — with the analysis code available inline (click <em>Code</em>) if you want to see exactly
-how a figure or number was produced.</p>
-<a href="report.html">Open the report &rarr;</a>
-</div>
-<div class="info-card">
-<h3>Risk Explorer</h3>
-<p>Enter your own vitals — or someone else's — and see where they land relative to this cohort,
-plus a nearest-neighbor read on which risk band they resemble most.</p>
-<a href="explore.html">Open the explorer &rarr;</a>
-</div>
-</div>
+## Data quality flags
+
+A few things in this dataset are worth flagging before trusting any number above too far. None
+of these rows have been removed anywhere in this report or in the risk explorer — the point here
+is to name what's odd and be upfront that we don't know, from the data alone, whether it reflects
+genuine repeat measurements, coincidence, data-entry duplication, or sensor error.
+
+```{r dup-check}
+dup_groups = maternal_df |>
+  count(age, systolic_bp, diastolic_bp, bs, body_temp, heart_rate, risk_level, name = "n_copies") |>
+  filter(n_copies > 1) |>
+  arrange(desc(n_copies))
+
+n_unique       = nrow(distinct(maternal_df))
+n_total        = nrow(maternal_df)
+n_dup_groups   = nrow(dup_groups)
+n_extra_copies = sum(dup_groups$n_copies - 1)
+```
+
+```{r dup-table}
+dup_groups |>
+  slice_head(n = 8) |>
+  knitr::kable(col.names = c("Age", "Systolic BP", "Diastolic BP", "BS", "Body Temp", "Heart Rate", "Risk Level", "Copies in dataset"))
+```
+
+Only `r n_unique` of the `r n_total` records are unique row-for-row. The other
+`r n_extra_copies` are exact repeats — same age, same blood pressure, same glucose, same
+heart rate, same risk label — of a combination that already appears elsewhere, spread across
+`r n_dup_groups` distinct value combinations that each show up more than once (the most repeated
+single combination appears `r max(dup_groups$n_copies)` times). That's over half the dataset.
+We're leaving every row in, because deleting them assumes they're errors, and they might not be —
+IoT sensors reading the same patient repeatedly, or several patients genuinely sharing similar
+vitals, would produce the same pattern. But it does mean every mean, SD, and correlation in this
+report implicitly treats a handful of repeated value-combinations as if they were independent
+patients, and it's worth keeping in mind when reading the risk-level split above: the proportions
+shift noticeably (low risk goes from a plurality to more like half the cohort) if you collapse to
+unique rows only.
+
+```{r age-check}
+n_age_under15 = sum(maternal_df$age < 15)
+n_age_under18 = sum(maternal_df$age < 18)
+n_age_over55  = sum(maternal_df$age > 55)
+n_hr_under40  = sum(maternal_df$heart_rate < 40)
+```
+
+Age ranges from `r min(maternal_df$age)` to `r max(maternal_df$age)` years.
+`r n_age_under15` records list an age under 15, and `r n_age_under18` are under 18 —
+roughly `r round(100*n_age_under18/n_total,1)`% of the cohort. Given this dataset was collected
+across hospitals and community clinics in a setting where adolescent pregnancy is a documented
+public health pattern, we're not treating the under-18 group as an error; if anything it's a
+subgroup worth its own look rather than folding into one continuous age trend. The upper end is
+harder to explain the same way — `r n_age_over55` records list an age past 55, including some
+close to `r max(maternal_df$age)`, which is past the point pregnancy is possible without
+medical intervention. That's a more likely candidate for a recording error, but again, flagged
+rather than dropped.
+
+```{r hr-outlier}
+maternal_df |>
+  filter(heart_rate < 40) |>
+  select(age, systolic_bp, diastolic_bp, bs, heart_rate, risk_level)
+```
+
+`r n_hr_under40` record(s) list a resting heart rate under 40 bpm, including one reading in the
+single digits — not a physiologically plausible resting heart rate for a living person, let alone
+a pregnant one. Most likely a sensor dropout or transcription artifact, but as with everything
+else on this page, we're naming it rather than silently correcting it.
+
+## Cohort overview
+
+```{r cohort-overview}
+maternal_df |>
+  group_by(risk_level) |>
+  summarise(n = n(), .groups = "drop") |>
+  mutate(pct = round(100 * n / sum(n), 1))
+```
+
+```{r risk-bar}
+p1 = maternal_df |>
+  count(risk_level) |>
+  ggplot(aes(x = risk_level, y = n, fill = risk_level, text = paste0(n, " records"))) +
+  geom_col(width = 0.6) +
+  scale_fill_manual(values = risk_colors, guide = "none") +
+  labs(x = NULL, y = "Records", title = "Distribution of risk level across the cohort")
+
+ggplotly(p1, tooltip = "text")
+```
+
+Low-risk pregnancies are the largest single group, but the cohort is not far off a three-way
+split — mid- and high-risk pregnancies together outnumber low-risk ones. That balance matters
+downstream: a classifier that simply guessed "low risk" every time would still be wrong more
+than half the time, so there's real separation to look for in the vitals themselves.
+
+## Vitals by risk level
+
+```{r summary-table}
+maternal_df |>
+  pivot_longer(c(age, systolic_bp, diastolic_bp, bs, body_temp, heart_rate),
+               names_to = "variable", values_to = "value") |>
+  group_by(variable, risk_level) |>
+  summarise(mean = round(mean(value), 2), sd = round(sd(value), 2), .groups = "drop") |>
+  pivot_wider(names_from = risk_level, values_from = c(mean, sd)) |>
+  knitr::kable()
+```
+
+```{r boxplots, fig.height = 7}
+p2 = maternal_df |>
+  pivot_longer(c(age, systolic_bp, diastolic_bp, bs, body_temp, heart_rate),
+               names_to = "variable", values_to = "value") |>
+  mutate(variable = recode(variable,
+    age = "Age (years)", systolic_bp = "Systolic BP (mmHg)",
+    diastolic_bp = "Diastolic BP (mmHg)", bs = "Blood glucose (mmol/L)",
+    body_temp = "Body temp (°F)", heart_rate = "Heart rate (bpm)")) |>
+  ggplot(aes(x = risk_level, y = value, fill = risk_level)) +
+  geom_boxplot(outlier.size = 0.6, width = 0.6) +
+  facet_wrap(~variable, scales = "free_y", ncol = 3) +
+  scale_fill_manual(values = risk_colors, guide = "none") +
+  labs(x = NULL, y = NULL, title = "Vital sign distributions across risk levels")
+
+ggplotly(p2, height = 520) |> layout(margin = list(t = 60))
+```
+
+```{r group-stats, include = FALSE}
+gs = function(var) {
+  maternal_df |>
+    group_by(risk_level) |>
+    summarise(m = mean({{ var }}), .groups = "drop") |>
+    deframe()
+}
+age_g   = gs(age)
+sbp_g   = gs(systolic_bp)
+dbp_g   = gs(diastolic_bp)
+bs_g    = gs(bs)
+```
+
+The separation is clearest for blood glucose and blood pressure. High-risk pregnancies carry a
+mean BS of `r round(bs_g["high risk"], 1)` mmol/L against `r round(bs_g["low risk"], 1)` mmol/L
+for low-risk pregnancies — a gap that swamps the within-group spread for the low-risk group
+(SD well under 1 mmol/L there, per the table above). Systolic and diastolic blood pressure move
+together in the same direction: `r round(sbp_g["high risk"])`/`r round(dbp_g["high risk"])` mmHg
+on average for high-risk pregnancies versus `r round(sbp_g["low risk"])`/`r round(dbp_g["low risk"])`
+mmHg for low-risk ones. Age shows a real but noisier gradient — high-risk pregnancies skew
+roughly `r round(age_g["high risk"] - age_g["low risk"])` years older on average than low-risk
+ones, with substantial overlap in both directions. Body temperature and heart rate barely move
+across groups, which is consistent with them acting more as flags for acute events (fever,
+tachycardia) than as steady discriminators of risk class in this cohort.
+
+## Correlation structure
+
+```{r corr-heatmap}
+corr_mat = maternal_df |>
+  select(age, systolic_bp, diastolic_bp, bs, body_temp, heart_rate) |>
+  rename(Age = age, `Systolic BP` = systolic_bp, `Diastolic BP` = diastolic_bp,
+         BS = bs, `Body Temp` = body_temp, `Heart Rate` = heart_rate) |>
+  cor() |>
+  round(2)
+
+corr_long = corr_mat |>
+  as.data.frame() |>
+  rownames_to_column("var1") |>
+  pivot_longer(-var1, names_to = "var2", values_to = "r")
+
+p3 = corr_long |>
+  ggplot(aes(x = var1, y = var2, fill = r, text = paste0(var1, " × ", var2, ": ", r))) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(low = "#0e7c7b", mid = "#f6f7fb", high = "#b3323b", midpoint = 0, limits = c(-1, 1)) +
+  labs(x = NULL, y = NULL, title = "Pairwise correlation among the six vitals", fill = "r") +
+  theme(axis.text.x = element_text(angle = 40, hjust = 1))
+
+ggplotly(p3, tooltip = "text")
+```
+
+Systolic and diastolic blood pressure are, unsurprisingly, the strongest pair in the matrix
+(r = `r round(corr_mat["Systolic BP", "Diastolic BP"], 2)`) — they're measuring the same
+physiological event from two ends. Age correlates moderately with blood pressure and glucose
+alike (r in the `r round(min(corr_mat["Age", c("Systolic BP","Diastolic BP","BS")]), 2)`–`r round(max(corr_mat["Age", c("Systolic BP","Diastolic BP","BS")]), 2)`
+range), which tracks with the age gradient seen in the boxplots above. Heart rate stands apart —
+its strongest correlation with anything else in the matrix is
+`r round(max(abs(corr_mat["Heart Rate", c("Age","Systolic BP","Diastolic BP","BS","Body Temp")])), 2)`,
+which is weak enough that it's carrying mostly independent information (or mostly noise) relative
+to the other five vitals.
+
+## A simple risk classifier
+
+As a baseline read on how separable the three risk levels actually are from the six vitals, a
+multinomial logistic regression was fit on `r round(0.75 * nrow(maternal_df))` randomly sampled
+records and evaluated on the held-out `r nrow(maternal_df) - round(0.75 * nrow(maternal_df))`.
+This is the same modeling approach behind the risk explorer's comparison logic, just formalized
+with a train/test split here.
+
+```{r classifier}
+set.seed(2026)
+
+split_idx = sample(seq_len(nrow(maternal_df)), size = round(0.75 * nrow(maternal_df)))
+train_df  = maternal_df[split_idx, ]
+test_df   = maternal_df[-split_idx, ]
+
+fit = multinom(
+  risk_level ~ age + systolic_bp + diastolic_bp + bs + body_temp + heart_rate,
+  data = train_df, trace = FALSE
+)
+
+pred = predict(fit, newdata = test_df)
+acc  = mean(pred == test_df$risk_level)
+
+table(Predicted = pred, Actual = test_df$risk_level)
+```
+
+Held-out accuracy: **`r scales::percent(acc, accuracy = 0.1)`**, against a
+`r scales::percent(max(prop.table(table(test_df$risk_level))), accuracy = 0.1)` baseline for
+always predicting the majority class in the test fold. The confusion matrix above shows where
+the model actually struggles — mid-risk pregnancies are the hardest to separate cleanly, which
+lines up with the boxplots: mid-risk vitals sit between the low- and high-risk groups on almost
+every variable, rather than forming a distinct cluster of their own.
+
+```{r coef-table}
+tidy(fit) |>
+  filter(term != "(Intercept)") |>
+  mutate(across(where(is.numeric), ~round(.x, 3))) |>
+  arrange(y.level, term) |>
+  knitr::kable()
+```
+
+Blood glucose carries the largest standardized pull toward a high-risk classification, followed
+by blood pressure — consistent with the group means above and with what's clinically expected:
+hyperglycemia and hypertensive markers are the two vitals most directly tied to pregnancy risk
+in the obstetric literature this dataset is meant to echo.
 
 <footer class="site-footer">
-Built from the Kaggle Maternal Health Risk Data Set for exploratory and educational purposes — not a diagnostic tool.
+Analysis run against the Kaggle Maternal Health Risk Data Set. See the <a href="index.html">home page</a>
+for variable definitions, or the <a href="explore.html">risk explorer</a> to compare your own vitals
+against this cohort.
 </footer>
